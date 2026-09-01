@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+
+    <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>📚 Library Management System</h1>
+        <p>Manage Books, Members and Library Records</p>
+    </header>
+
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#books">Books</a>
+        <a href="#members">Members</a>
+        <a href="#issue">Issue Book</a>
+        <a href="#return">Return Book</a>
+    </nav>
+
+
+    <!-- Home Section -->
+    <section id="home" class="hero">
+        <h2>Welcome to the Library</h2>
+        <p>Manage your library easily and efficiently.</p>
+
+        <div class="buttons">
+            <a href="#books" class="button">Manage Books</a>
+            <a href="#members" class="button">Manage Members</a>
+        </div>
+    </section>
+
+
+    <!-- Books Section -->
+     <section id="books" class="section books-section">
+        <h2>📖 Book Management</h2>
+
+        <!-- Add Book Form -->
+        <div class="form-container">
+
+            <h3>Add a New Book</h3>
+
+            <form action="/addBook" method="post">
+
+                <label for="bookName">Book Name</label>
+                <input type="text" id="bookName" name="bookName"
+                    placeholder="Enter book name" required>
+
+                <label for="author">Author</label>
+                <input type="text" id="author" name="author"
+                    placeholder="Enter author name" required>
+
+                <label for="category">Category</label>
+                <input type="text" id="category" name="category"
+                    placeholder="Enter category" required>
+
+                <button type="submit">Add Book</button>
+
+            </form>
+
+        </div>
+
+
+        <!-- Available Books -->
+        <div class="books-container">
+
+            <h3>Available Books</h3>
+
+            <!-- Search -->
+            <form action="/searchBook" method="post" class="search-box">
+
+                <input type="text" id="searchBook" name="searchBook"
+                    placeholder="Search for a book..." required>
+
+                <button type="submit">🔍 Search</button>
+
+            </form>
+
+
+            <!-- Books Table -->
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Book Name</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="booksTableBody">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- Members Section -->
+    <section id="members" class="section members-section">
+
+        <h2>👨‍🎓 Member Management</h2>
+
+        <div class="form-container">
+
+            <h3>Add Member</h3>
+
+            <form action="/addMember" method="post">
+
+                <label for="memberName">Member Name</label>
+                <input type="text" id="memberName" name="memberName"
+                    placeholder="Enter member name" required>
+
+                <label for="department">Department</label>
+                <input type="text" id="department" name="department"
+                    placeholder="Enter department" required>
+
+                <button type="submit">Add Member</button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- Issue Book Section -->
+    <section id="issue" class="section issue-section">
+
+        <h2>📕 Issue Book</h2>
+
+        <div class="form-container">
+
+            <form action="/issueBook" method="post">
+
+                <label for="issueBookName">Book Name</label>
+                <input type="text" id="issueBookName" name="issueBookName"
+                    placeholder="Enter book name" required>
+
+                <label for="issueMemberName">Member Name</label>
+                <input type="text" id="issueMemberName" name="issueMemberName"
+                    placeholder="Enter member name" required>
+
+                <button type="submit">Issue Book</button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- Return Book Section -->
+    <section id="return" class="section return-section">
+
+        <h2>📗 Return Book</h2>
+
+        <div class="form-container">
+
+            <form action="/returnBook" method="post">
+
+                <label for="returnBookName">Book Name</label>
+                <input type="text" id="returnBookName" name="returnBookName"
+                    placeholder="Enter book name" required>
+
+                <label for="returnMemberName">Member Name</label>
+                <input type="text" id="returnMemberName" name="returnMemberName"
+                    placeholder="Enter member name" required>
+
+                <button type="submit">Return Book</button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 Library Management System</p>
+    </footer>
+
+
+    <!-- Load books from the database -->
+    <script>
+
+        function loadBooks() {
+
+            fetch("/getBooks")
+                .then(response => response.text())
+                .then(data => {
+
+                    const tableBody =
+                        document.getElementById("booksTableBody");
+
+                    tableBody.innerHTML = "";
+
+                    if (data.trim() === "") return;
+
+                    const books =
+                        data.trim().split("\n");
+
+                    books.forEach(book => {
+
+                        const details =
+                            book.split("|");
+
+                        // First value is the unique Book ID
+                        const bookId = details[0];
+
+                        const row =
+                            document.createElement("tr");
+
+                        // Display Book Name, Author, Category and Status
+                        for (let i = 1; i < details.length; i++) {
+
+                            const cell =
+                                document.createElement("td");
+
+                            cell.textContent =
+                                details[i];
+
+                            row.appendChild(cell);
+                        }
+
+                        // Create Delete button
+                        const actionCell =
+                            document.createElement("td");
+
+                        const deleteButton =
+                            document.createElement("button");
+
+                        deleteButton.textContent =
+                            "🗑️ Delete";
+
+                        deleteButton.type =
+                            "button";
+
+                        deleteButton.onclick =
+                            function () {
+
+                                const confirmDelete =
+                                    confirm(
+                                        "Are you sure you want to delete this book?"
+                                    );
+
+                                if (!confirmDelete) return;
+
+                                fetch("/deleteBook", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type":
+                                            "application/x-www-form-urlencoded"
+                                    },
+                                    body:
+                                        "bookId=" +
+                                        encodeURIComponent(bookId)
+                                })
+                                .then(response =>
+                                    response.text()
+                                )
+                                .then(message => {
+
+                                    alert(
+                                        "Book deleted successfully!"
+                                    );
+
+                                    // Reload the books automatically
+                                    loadBooks();
+                                })
+                                .catch(error => {
+
+                                    console.error(
+                                        "Error deleting book:",
+                                        error
+                                    );
+
+                                    alert(
+                                        "Error deleting book."
+                                    );
+                                });
+                            };
+
+                        actionCell.appendChild(
+                            deleteButton
+                        );
+
+                        row.appendChild(
+                            actionCell
+                        );
+
+                        tableBody.appendChild(
+                            row
+                        );
+                    });
+                })
+                .catch(error => {
+                    console.error(
+                        "Error loading books:",
+                        error
+                    );
+                });
+        }
+
+        // Load books when the page opens
+        loadBooks();
+
+    </script>
+
+</body>
+
+</html>

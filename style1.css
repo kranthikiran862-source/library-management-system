@@ -1,0 +1,382 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5ff;
+    color: #172554;
+    padding: 15px;
+}
+
+/* Header */
+header {
+    background-color: #ffffff;
+    color: #172554;
+    text-align: left;
+    padding: 12px 20px;
+}
+
+header h1 {
+    font-size: 28px;
+    margin-bottom: 3px;
+}
+
+header p {
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* Navigation */
+nav {
+    background-color: #eef0ff;
+    border: 1px solid #cdd5ff;
+    border-radius: 7px;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+nav a {
+    color: #1746c7;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 0 22px;
+    border-right: 1px solid #c7cce8;
+}
+
+nav a:last-child {
+    border-right: none;
+}
+
+nav a:hover {
+    color: #0d2f91;
+}
+
+/* Home */
+.hero {
+    text-align: center;
+    padding: 25px 20px;
+    background-color: #eef0ff;
+    border: 2px solid #d5dcff;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.hero h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.hero p {
+    font-size: 13px;
+    margin-bottom: 15px;
+    color: #475569;
+}
+
+/* Home Buttons */
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.button {
+    background-color: #287bea;
+    color: white;
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.button:hover {
+    background-color: #1769d0;
+}
+
+/* Main Sections */
+.section {
+    width: 100%;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid;
+}
+
+.section h2 {
+    text-align: left;
+    font-size: 19px;
+    margin-bottom: 12px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid;
+}
+
+/* Books */
+.books-section {
+    background-color: #eef5ff;
+    border-color: #d2e2ff;
+}
+
+.books-section h2 {
+    border-color: #c5d8ff;
+}
+
+/* Members */
+.members-section {
+    background-color: #edfaf5;
+    border-color: #c9eee0;
+}
+
+.members-section h2 {
+    border-color: #bce5d5;
+}
+
+/* Issue */
+.issue-section {
+    background-color: #fff9e9;
+    border-color: #ffe4a8;
+}
+
+.issue-section h2 {
+    border-color: #f4d99b;
+}
+
+/* Return */
+.return-section {
+    background-color: #fff0f3;
+    border-color: #ffd1da;
+}
+
+.return-section h2 {
+    border-color: #f2c1cb;
+}
+
+/* Form Container */
+.form-container {
+    max-width: 100%;
+    margin: 0;
+}
+
+.form-container h3 {
+    font-size: 14px;
+    margin-bottom: 7px;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 7px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+input {
+    padding: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 11px;
+    background-color: white;
+}
+
+/* Books form - make fields horizontal */
+.books-section .form-container form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 10px;
+    align-items: end;
+}
+
+.books-section .form-container label {
+    margin-top: 0;
+}
+
+.books-section .form-container input {
+    width: 100%;
+}
+
+/* Buttons */
+button {
+    margin-top: 12px;
+    padding: 8px 18px;
+    background-color: #287bea;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+button:hover {
+    background-color: #1769d0;
+}
+
+/* Books button */
+.books-section button {
+    background-color: #287bea;
+}
+
+/* Members button */
+.members-section button {
+    background-color: #159447;
+}
+
+.members-section button:hover {
+    background-color: #0d7736;
+}
+
+/* Issue button */
+.issue-section button {
+    background-color: #f5a000;
+}
+
+.issue-section button:hover {
+    background-color: #d98c00;
+}
+
+/* Return button */
+.return-section button {
+    background-color: #e31b2f;
+}
+
+.return-section button:hover {
+    background-color: #c51426;
+}
+
+/* Available Books */
+.books-container {
+    margin-top: 18px;
+    padding-top: 10px;
+    border-top: 1px solid #cddcff;
+}
+
+.books-container h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+/* Search Box */
+.search-box {
+    display: flex;
+    flex-direction: row;
+    gap: 7px;
+    margin-bottom: 10px;
+}
+
+.search-box input {
+    flex: 1;
+}
+
+.search-box button {
+    margin-top: 0;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    background-color: white;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+th,
+td {
+    border: 1px solid #d4def5;
+    padding: 7px;
+    text-align: center;
+    font-size: 10px;
+}
+
+th {
+    background-color: #dce7ff;
+    color: #172554;
+}
+
+tr:nth-child(even) {
+    background-color: #f7f9ff;
+}
+
+/* Delete Button */
+td button {
+    margin-top: 0;
+    padding: 5px 10px;
+    background-color: #ff6b6b;
+    font-size: 10px;
+}
+
+td button:hover {
+    background-color: #e54848;
+}
+
+/* Book Status */
+.available {
+    font-weight: bold;
+    color: #159447;
+    background-color: #d9fbe8;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+
+.issued {
+    font-weight: bold;
+    color: #d62828;
+}
+
+/* Issue and Return side-by-side */
+.issue-section,
+.return-section {
+    width: 49%;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 5px;
+}
+
+.issue-section {
+    margin-right: 1%;
+}
+
+.return-section {
+    margin-left: 0;
+}
+
+/* Issue and Return forms horizontal */
+.issue-section form,
+.return-section form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+    align-items: end;
+}
+
+.issue-section label,
+.return-section label {
+    margin-top: 0;
+}
+
+.issue-section button,
+.return-section button {
+    margin-top: 0;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    background-color: #eef0ff;
+    color: #475569;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    font-size: 10px;
+}
