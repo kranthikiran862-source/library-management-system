@@ -4,11 +4,11 @@ import java.sql.DriverManager;
 public class DBConnection {
 
     static String url =
-            "jdbc:mysql://localhost:3306/library_management";
+            "jdbc:mysql://bcuj3tifqslst5ph9al7-mysql.services.clever-cloud.com:3306/bcuj3tifqslst5ph9al7";
 
-    static String username = "root";
+    static String username = "uuuqoqfq2gxovy2w";
 
-    static String password = "Kranthi@2007";
+    static String password = "cssd38SKSMZvbUiinWjE";
 
     public static Connection getConnection() throws Exception {
 
