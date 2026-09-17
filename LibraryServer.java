@@ -17,11 +17,14 @@ import java.util.Map;
 public class LibraryServer {
 
     public static void main(String[] args) throws Exception {
+                int port = Integer.parseInt(
+        System.getenv().getOrDefault("PORT", "8080")
+);
 
-        HttpServer server = HttpServer.create(
-                new InetSocketAddress(8080), 0
-        );
-
+HttpServer server = HttpServer.create(
+        new InetSocketAddress(port), 0
+);
+    
         // Home page
         server.createContext("/", LibraryServer::home);
         server.createContext("/style1.css", LibraryServer::css);
