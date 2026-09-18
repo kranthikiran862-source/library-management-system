@@ -8,7 +8,7 @@ public class DBConnection {
 
     static String username = "uuuqoqfq2gxovy2w";
 
-    static String password = "cssd38SKSMZvbUiinWjE";
+    static String password = System.getenv("DB_PASSWORD");
 
     public static Connection getConnection() throws Exception {
 

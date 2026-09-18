@@ -17,14 +17,17 @@ import java.util.Map;
 public class LibraryServer {
 
     public static void main(String[] args) throws Exception {
-                int port = Integer.parseInt(
-        System.getenv().getOrDefault("PORT", "8080")
-);
 
-HttpServer server = HttpServer.create(
-        new InetSocketAddress(port), 0
-);
-    
+        // Use Render's PORT when deployed.
+        // Use 8080 when running locally.
+        int port = Integer.parseInt(
+                System.getenv().getOrDefault("PORT", "8080")
+        );
+
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress("0.0.0.0", port), 0
+        );
+
         // Home page
         server.createContext("/", LibraryServer::home);
         server.createContext("/style1.css", LibraryServer::css);
@@ -47,31 +50,31 @@ HttpServer server = HttpServer.create(
         System.out.println("================================");
         System.out.println("Library Management System");
         System.out.println("Server started successfully!");
-        System.out.println("Open: http://localhost:8080");
+        System.out.println("Running on port: " + port);
         System.out.println("================================");
     }
-       static void css(HttpExchange exchange) throws IOException {
 
-    byte[] response =
-            Files.readAllBytes(Paths.get("style1.css"));
+    static void css(HttpExchange exchange) throws IOException {
 
-    exchange.getResponseHeaders().set(
-            "Content-Type",
-            "text/css; charset=UTF-8"
-    );
+        byte[] response =
+                Files.readAllBytes(Paths.get("style1.css"));
 
-    exchange.sendResponseHeaders(
-            200,
-            response.length
-    );
+        exchange.getResponseHeaders().set(
+                "Content-Type",
+                "text/css; charset=UTF-8"
+        );
 
-    OutputStream output =
-            exchange.getResponseBody();
+        exchange.sendResponseHeaders(
+                200,
+                response.length
+        );
 
-    output.write(response);
-    output.close();
-}
+        OutputStream output =
+                exchange.getResponseBody();
 
+        output.write(response);
+        output.close();
+    }
 
     // =========================
     // HOME PAGE
@@ -99,7 +102,6 @@ HttpServer server = HttpServer.create(
         output.write(response);
         output.close();
     }
-
 
     // =========================
     // ADD BOOK
@@ -160,7 +162,6 @@ HttpServer server = HttpServer.create(
         );
     }
 
-
     // =========================
     // SEARCH BOOK
     // =========================
@@ -207,7 +208,6 @@ HttpServer server = HttpServer.create(
                 200
         );
     }
-
 
     // =========================
     // ADD MEMBER
@@ -261,7 +261,6 @@ HttpServer server = HttpServer.create(
                 200
         );
     }
-
 
     // =========================
     // ISSUE BOOK
@@ -317,7 +316,6 @@ HttpServer server = HttpServer.create(
         );
     }
 
-
     // =========================
     // RETURN BOOK
     // =========================
@@ -371,7 +369,6 @@ HttpServer server = HttpServer.create(
                 200
         );
     }
-
 
     // =========================
     // GET ALL BOOKS
@@ -441,7 +438,6 @@ HttpServer server = HttpServer.create(
         output.write(response);
         output.close();
     }
-
 
     // =========================
     // DELETE BOOK
@@ -530,7 +526,6 @@ HttpServer server = HttpServer.create(
         }
     }
 
-
     // =========================
     // READ FORM DATA
     // =========================
@@ -577,7 +572,6 @@ HttpServer server = HttpServer.create(
 
         return data;
     }
-
 
     // =========================
     // SEND RESPONSE
