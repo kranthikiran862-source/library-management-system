@@ -13,6 +13,9 @@ public class IssueManager {
             Connection connection =
                     DBConnection.getConnection();
 
+            bookName = bookName.trim();
+            memberName = memberName.trim();
+
             // Check whether book exists
             String checkSql =
                     "SELECT status FROM books WHERE title = ?";
@@ -26,6 +29,7 @@ public class IssueManager {
                     checkStatement.executeQuery();
 
             if (!result.next()) {
+
                 result.close();
                 checkStatement.close();
                 connection.close();
@@ -40,13 +44,17 @@ public class IssueManager {
 
             // Check whether book is available
             if (!status.equalsIgnoreCase("Available")) {
+
                 connection.close();
+
                 return "Book is already issued.";
             }
 
+
             // Check whether member exists
             String memberSql =
-                    "SELECT * FROM members WHERE member_name = ?";
+                    "SELECT * FROM members " +
+                    "WHERE LOWER(TRIM(member_name)) = LOWER(TRIM(?))";
 
             PreparedStatement memberStatement =
                     connection.prepareStatement(memberSql);
@@ -57,6 +65,7 @@ public class IssueManager {
                     memberStatement.executeQuery();
 
             if (!memberResult.next()) {
+
                 memberResult.close();
                 memberStatement.close();
                 connection.close();
@@ -66,6 +75,7 @@ public class IssueManager {
 
             memberResult.close();
             memberStatement.close();
+
 
             // Create issue record
             String issueSql =
@@ -80,7 +90,9 @@ public class IssueManager {
             issueStatement.setString(2, memberName);
 
             issueStatement.executeUpdate();
+
             issueStatement.close();
+
 
             // Change book status
             String updateSql =
@@ -91,7 +103,9 @@ public class IssueManager {
                     connection.prepareStatement(updateSql);
 
             updateStatement.setString(1, bookName);
+
             updateStatement.executeUpdate();
+
             updateStatement.close();
 
             connection.close();
@@ -99,7 +113,9 @@ public class IssueManager {
             return "Book issued successfully!";
 
         } catch (Exception e) {
+
             e.printStackTrace();
+
             return "Error issuing book.";
         }
     }
@@ -114,11 +130,15 @@ public class IssueManager {
             Connection connection =
                     DBConnection.getConnection();
 
+            bookName = bookName.trim();
+            memberName = memberName.trim();
+
+
             // Check active issue record
             String checkSql =
                     "SELECT * FROM issued_books " +
-                    "WHERE book_name = ? " +
-                    "AND member_name = ? " +
+                    "WHERE LOWER(TRIM(book_name)) = LOWER(TRIM(?)) " +
+                    "AND LOWER(TRIM(member_name)) = LOWER(TRIM(?)) " +
                     "AND return_date IS NULL";
 
             PreparedStatement checkStatement =
@@ -130,7 +150,9 @@ public class IssueManager {
             ResultSet result =
                     checkStatement.executeQuery();
 
+
             if (!result.next()) {
+
                 result.close();
                 checkStatement.close();
                 connection.close();
@@ -141,12 +163,13 @@ public class IssueManager {
             result.close();
             checkStatement.close();
 
+
             // Add return date
             String returnSql =
                     "UPDATE issued_books " +
                     "SET return_date = CURRENT_DATE " +
-                    "WHERE book_name = ? " +
-                    "AND member_name = ? " +
+                    "WHERE LOWER(TRIM(book_name)) = LOWER(TRIM(?)) " +
+                    "AND LOWER(TRIM(member_name)) = LOWER(TRIM(?)) " +
                     "AND return_date IS NULL";
 
             PreparedStatement returnStatement =
@@ -156,18 +179,22 @@ public class IssueManager {
             returnStatement.setString(2, memberName);
 
             returnStatement.executeUpdate();
+
             returnStatement.close();
+
 
             // Change book status back to Available
             String updateSql =
                     "UPDATE books SET status = 'Available' " +
-                    "WHERE title = ?";
+                    "WHERE LOWER(TRIM(title)) = LOWER(TRIM(?))";
 
             PreparedStatement updateStatement =
                     connection.prepareStatement(updateSql);
 
             updateStatement.setString(1, bookName);
+
             updateStatement.executeUpdate();
+
             updateStatement.close();
 
             connection.close();
@@ -175,7 +202,9 @@ public class IssueManager {
             return "Book returned successfully!";
 
         } catch (Exception e) {
+
             e.printStackTrace();
+
             return "Error returning book.";
         }
     }

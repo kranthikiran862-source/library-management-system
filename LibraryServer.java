@@ -18,106 +18,264 @@ public class LibraryServer {
 
     public static void main(String[] args) throws Exception {
 
-        // Use Render's PORT when deployed.
-        // Use 8080 when running locally.
-        int port = Integer.parseInt(
-                System.getenv().getOrDefault("PORT", "8080")
-        );
+        int port = 8080;
 
-        HttpServer server = HttpServer.create(
-                new InetSocketAddress("0.0.0.0", port), 0
-        );
+        String envPort = System.getenv("PORT");
 
-        // Home page
+        if (envPort != null) {
+            port = Integer.parseInt(envPort);
+        }
+
+        HttpServer server =
+                HttpServer.create(
+                        new InetSocketAddress(port),
+                        0
+                );
+
         server.createContext("/", LibraryServer::home);
-        server.createContext("/style1.css", LibraryServer::css);
 
-        // Book operations
-        server.createContext("/addBook", LibraryServer::addBook);
-        server.createContext("/searchBook", LibraryServer::searchBook);
-        server.createContext("/getBooks", LibraryServer::getBooks);
-        server.createContext("/deleteBook", LibraryServer::deleteBook);
+        server.createContext(
+                "/student.html",
+                LibraryServer::studentPage
+        );
 
-        // Member operation
-        server.createContext("/addMember", LibraryServer::addMember);
+        server.createContext(
+                "/librarian.html",
+                LibraryServer::librarianPage
+        );
 
-        // Issue and return
-        server.createContext("/issueBook", LibraryServer::issueBook);
-        server.createContext("/returnBook", LibraryServer::returnBook);
+        server.createContext(
+                "/style1.css",
+                LibraryServer::style
+        );
+
+        server.createContext(
+                "/addBook",
+                LibraryServer::addBook
+        );
+
+        server.createContext(
+                "/searchBook",
+                LibraryServer::searchBook
+        );
+
+        server.createContext(
+                "/getBooks",
+                LibraryServer::getBooks
+        );
+
+        server.createContext(
+                "/deleteBook",
+                LibraryServer::deleteBook
+        );
+
+        server.createContext(
+                "/addMember",
+                LibraryServer::addMember
+        );
+
+        // NEW: Student Registration
+        server.createContext(
+                "/registerMember",
+                LibraryServer::registerMember
+        );
+
+        server.createContext(
+                "/issueBook",
+                LibraryServer::issueBook
+        );
+
+        server.createContext(
+                "/returnBook",
+                LibraryServer::returnBook
+        );
+
+        server.createContext(
+                "/requestBook",
+                LibraryServer::requestBook
+        );
+
+        server.createContext(
+                "/getRequests",
+                LibraryServer::getRequests
+        );
+
+        server.createContext(
+                "/updateRequest",
+                LibraryServer::updateRequest
+        );
 
         server.start();
 
-        System.out.println("================================");
-        System.out.println("Library Management System");
-        System.out.println("Server started successfully!");
-        System.out.println("Running on port: " + port);
-        System.out.println("================================");
-    }
-
-    static void css(HttpExchange exchange) throws IOException {
-
-        byte[] response =
-                Files.readAllBytes(Paths.get("style1.css"));
-
-        exchange.getResponseHeaders().set(
-                "Content-Type",
-                "text/css; charset=UTF-8"
+        System.out.println(
+                "Library Management System"
         );
 
-        exchange.sendResponseHeaders(
-                200,
-                response.length
+        System.out.println(
+                "Server started successfully"
         );
 
-        OutputStream output =
-                exchange.getResponseBody();
-
-        output.write(response);
-        output.close();
+        System.out.println(
+                "Open: http://localhost:" + port
+        );
     }
+
 
     // =========================
     // HOME PAGE
     // =========================
 
-    static void home(HttpExchange exchange)
-            throws IOException {
+    private static void home(
+            HttpExchange exchange) throws IOException {
 
-        byte[] response =
-                Files.readAllBytes(Paths.get("lib.html"));
-
-        exchange.getResponseHeaders().set(
-                "Content-Type",
-                "text/html; charset=UTF-8"
+        sendFile(
+                exchange,
+                "index.html",
+                "text/html"
         );
-
-        exchange.sendResponseHeaders(
-                200,
-                response.length
-        );
-
-        OutputStream output =
-                exchange.getResponseBody();
-
-        output.write(response);
-        output.close();
     }
+
+
+    // =========================
+    // STUDENT PAGE
+    // =========================
+
+    private static void studentPage(
+            HttpExchange exchange) throws IOException {
+
+        sendFile(
+                exchange,
+                "student.html",
+                "text/html"
+        );
+    }
+
+
+    // =========================
+    // LIBRARIAN PAGE
+    // =========================
+
+    private static void librarianPage(
+            HttpExchange exchange) throws IOException {
+
+        sendFile(
+                exchange,
+                "librarian.html",
+                "text/html"
+        );
+    }
+
+
+    // =========================
+    // CSS
+    // =========================
+
+    private static void style(
+            HttpExchange exchange) throws IOException {
+
+        sendFile(
+                exchange,
+                "style1.css",
+                "text/css"
+        );
+    }
+
 
     // =========================
     // ADD BOOK
     // =========================
 
-    static void addBook(HttpExchange exchange)
-            throws IOException {
+    private static void addBook(
+            HttpExchange exchange) throws IOException {
 
         if (!exchange.getRequestMethod()
                 .equalsIgnoreCase("POST")) {
 
             sendResponse(
                     exchange,
-                    "POST method required.",
-                    405
+                    "Invalid request",
+                    "text/plain"
             );
+
+            return;
+        }
+
+        Map<String, String> data =
+                readFormData(exchange);
+
+        String title = data.get("title");
+        String author = data.get("author");
+        String category = data.get("category");
+
+        if (title == null ||
+                author == null ||
+                category == null ||
+                title.isEmpty() ||
+                author.isEmpty() ||
+                category.isEmpty()) {
+
+            sendResponse(
+                    exchange,
+                    "Please fill all fields",
+                    "text/plain"
+            );
+
+            return;
+        }
+
+        try (Connection con =
+                     DBConnection.getConnection()) {
+
+            String sql =
+                    "INSERT INTO books " +
+                    "(title, author, category, status) " +
+                    "VALUES (?, ?, ?, 'Available')";
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql);
+
+            ps.setString(1, title);
+            ps.setString(2, author);
+            ps.setString(3, category);
+
+            ps.executeUpdate();
+
+            sendResponse(
+                    exchange,
+                    "Book added successfully!",
+                    "text/plain"
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            sendResponse(
+                    exchange,
+                    "Error adding book: "
+                            + e.getMessage(),
+                    "text/plain"
+            );
+        }
+    }
+
+
+    // =========================
+    // SEARCH BOOK
+    // =========================
+
+    private static void searchBook(
+            HttpExchange exchange) throws IOException {
+
+        if (!exchange.getRequestMethod()
+                .equalsIgnoreCase("POST")) {
+
+            sendResponse(
+                    exchange,
+                    "Invalid request",
+                    "text/plain"
+            );
+
             return;
         }
 
@@ -127,56 +285,216 @@ public class LibraryServer {
         String bookName =
                 data.get("bookName");
 
-        String author =
-                data.get("author");
-
-        String category =
-                data.get("category");
-
         if (bookName == null ||
-            author == null ||
-            category == null ||
-            bookName.trim().isEmpty() ||
-            author.trim().isEmpty() ||
-            category.trim().isEmpty()) {
+                bookName.isEmpty()) {
 
             sendResponse(
                     exchange,
-                    "Please enter all book details.",
-                    400
+                    "Please enter book name",
+                    "text/plain"
             );
+
             return;
         }
 
-        BookManager.addBook(
-                bookName,
-                author,
-                category
-        );
+        try (Connection con =
+                     DBConnection.getConnection()) {
 
-        sendResponse(
-                exchange,
-                "<h2>Book Added Successfully! 📚</h2>" +
-                "<a href='/'>Go Back to Library</a>",
-                200
-        );
+            String sql =
+                    "SELECT title, author, category, status " +
+                    "FROM books " +
+                    "WHERE title LIKE ?";
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql);
+
+            ps.setString(
+                    1,
+                    "%" + bookName + "%"
+            );
+
+            ResultSet rs =
+                    ps.executeQuery();
+
+            StringBuilder result =
+                    new StringBuilder();
+
+            while (rs.next()) {
+
+                result.append(
+                        rs.getString("title")
+                );
+
+                result.append(" | ");
+
+                result.append(
+                        rs.getString("author")
+                );
+
+                result.append(" | ");
+
+                result.append(
+                        rs.getString("category")
+                );
+
+                result.append(" | ");
+
+                result.append(
+                        rs.getString("status")
+                );
+
+                result.append("\n");
+            }
+
+            if (result.length() == 0) {
+
+                result.append(
+                        "Book not found."
+                );
+            }
+
+            sendResponse(
+                    exchange,
+                    result.toString(),
+                    "text/plain"
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            sendResponse(
+                    exchange,
+                    "Error searching book: "
+                            + e.getMessage(),
+                    "text/plain"
+            );
+        }
     }
 
+
     // =========================
-    // SEARCH BOOK
+    // GET BOOKS
     // =========================
 
-    static void searchBook(HttpExchange exchange)
-            throws IOException {
+    private static void getBooks(
+            HttpExchange exchange) throws IOException {
+
+        if (!exchange.getRequestMethod()
+                .equalsIgnoreCase("GET")) {
+
+            sendResponse(
+                    exchange,
+                    "Invalid request",
+                    "text/plain"
+            );
+
+            return;
+        }
+
+        try (Connection con =
+                     DBConnection.getConnection()) {
+
+            String sql =
+                    "SELECT title, author, category, status " +
+                    "FROM books";
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql);
+
+            ResultSet rs =
+                    ps.executeQuery();
+
+            StringBuilder json =
+                    new StringBuilder();
+
+            json.append("[");
+
+            boolean first = true;
+
+            while (rs.next()) {
+
+                if (!first) {
+                    json.append(",");
+                }
+
+                first = false;
+
+                json.append("{");
+
+                json.append("\"title\":\"")
+                        .append(
+                                escapeJson(
+                                        rs.getString("title")
+                                )
+                        )
+                        .append("\",");
+
+                json.append("\"author\":\"")
+                        .append(
+                                escapeJson(
+                                        rs.getString("author")
+                                )
+                        )
+                        .append("\",");
+
+                json.append("\"category\":\"")
+                        .append(
+                                escapeJson(
+                                        rs.getString("category")
+                                )
+                        )
+                        .append("\",");
+
+                json.append("\"status\":\"")
+                        .append(
+                                escapeJson(
+                                        rs.getString("status")
+                                )
+                        )
+                        .append("\"");
+
+                json.append("}");
+            }
+
+            json.append("]");
+
+            sendResponse(
+                    exchange,
+                    json.toString(),
+                    "application/json"
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            sendResponse(
+                    exchange,
+                    "Error getting books: "
+                            + e.getMessage(),
+                    "text/plain"
+            );
+        }
+    }
+
+
+    // =========================
+    // DELETE BOOK
+    // =========================
+
+    private static void deleteBook(
+            HttpExchange exchange) throws IOException {
 
         if (!exchange.getRequestMethod()
                 .equalsIgnoreCase("POST")) {
 
             sendResponse(
                     exchange,
-                    "POST method required.",
-                    405
+                    "Invalid request",
+                    "text/plain"
             );
+
             return;
         }
 
@@ -184,46 +502,81 @@ public class LibraryServer {
                 readFormData(exchange);
 
         String bookName =
-                data.get("searchBook");
+                data.get("bookName");
 
         if (bookName == null ||
-            bookName.trim().isEmpty()) {
+                bookName.isEmpty()) {
 
             sendResponse(
                     exchange,
-                    "Please enter a book name.",
-                    400
+                    "Please enter book name",
+                    "text/plain"
             );
+
             return;
         }
 
-        String result =
-                BookManager.searchBook(bookName);
+        try (Connection con =
+                     DBConnection.getConnection()) {
 
-        sendResponse(
-                exchange,
-                "<h2>Search Result</h2>" +
-                "<pre>" + result + "</pre>" +
-                "<br><a href='/'>Go Back</a>",
-                200
-        );
+            String sql =
+                    "DELETE FROM books WHERE title = ?";
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql);
+
+            ps.setString(1, bookName);
+
+            int rows =
+                    ps.executeUpdate();
+
+            if (rows > 0) {
+
+                sendResponse(
+                        exchange,
+                        "Book deleted successfully!",
+                        "text/plain"
+                );
+
+            } else {
+
+                sendResponse(
+                        exchange,
+                        "Book not found.",
+                        "text/plain"
+                );
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            sendResponse(
+                    exchange,
+                    "Error deleting book: "
+                            + e.getMessage(),
+                    "text/plain"
+            );
+        }
     }
 
+
     // =========================
-    // ADD MEMBER
+    // ADD MEMBER - LIBRARIAN
     // =========================
 
-    static void addMember(HttpExchange exchange)
-            throws IOException {
+    private static void addMember(
+            HttpExchange exchange) throws IOException {
 
         if (!exchange.getRequestMethod()
                 .equalsIgnoreCase("POST")) {
 
             sendResponse(
                     exchange,
-                    "POST method required.",
-                    405
+                    "Invalid request",
+                    "text/plain"
             );
+
             return;
         }
 
@@ -237,46 +590,147 @@ public class LibraryServer {
                 data.get("department");
 
         if (memberName == null ||
-            department == null ||
-            memberName.trim().isEmpty() ||
-            department.trim().isEmpty()) {
+                department == null ||
+                memberName.isEmpty() ||
+                department.isEmpty()) {
 
             sendResponse(
                     exchange,
-                    "Please enter all member details.",
-                    400
+                    "Please fill all fields",
+                    "text/plain"
             );
+
             return;
         }
 
-        MemberManager.addMember(
-                memberName,
-                department
-        );
+        try (Connection con =
+                     DBConnection.getConnection()) {
 
-        sendResponse(
-                exchange,
-                "<h2>Member Added Successfully! 👨‍🎓</h2>" +
-                "<a href='/'>Go Back to Library</a>",
-                200
-        );
+            String sql =
+                    "INSERT INTO members " +
+                    "(member_name, department) " +
+                    "VALUES (?, ?)";
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql);
+
+            ps.setString(1, memberName);
+            ps.setString(2, department);
+
+            ps.executeUpdate();
+
+            sendResponse(
+                    exchange,
+                    "Member added successfully!",
+                    "text/plain"
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            sendResponse(
+                    exchange,
+                    "Error adding member: "
+                            + e.getMessage(),
+                    "text/plain"
+            );
+        }
     }
+
+
+    // =========================
+    // REGISTER MEMBER - STUDENT
+    // =========================
+
+    private static void registerMember(
+            HttpExchange exchange) throws IOException {
+
+        if (!exchange.getRequestMethod()
+                .equalsIgnoreCase("POST")) {
+
+            sendResponse(
+                    exchange,
+                    "Invalid request",
+                    "text/plain"
+            );
+
+            return;
+        }
+
+        Map<String, String> data =
+                readFormData(exchange);
+
+        String studentName =
+                data.get("studentName");
+
+        String studentId =
+                data.get("studentId");
+
+        String department =
+                data.get("department");
+
+        if (studentName == null ||
+                studentId == null ||
+                department == null ||
+                studentName.isEmpty() ||
+                studentId.isEmpty() ||
+                department.isEmpty()) {
+
+            sendResponse(
+                    exchange,
+                    "Please fill all fields",
+                    "text/plain"
+            );
+
+            return;
+        }
+
+        try {
+
+            String result =
+                    MemberManager.registerMember(
+                            studentName,
+                            studentId,
+                            department
+                    );
+
+            sendResponse(
+                    exchange,
+                    result,
+                    "text/plain"
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            sendResponse(
+                    exchange,
+                    "Error registering student: "
+                            + e.getMessage(),
+                    "text/plain"
+            );
+        }
+    }
+
 
     // =========================
     // ISSUE BOOK
     // =========================
 
-    static void issueBook(HttpExchange exchange)
-            throws IOException {
+    private static void issueBook(
+            HttpExchange exchange) throws IOException {
 
         if (!exchange.getRequestMethod()
                 .equalsIgnoreCase("POST")) {
 
             sendResponse(
                     exchange,
-                    "POST method required.",
-                    405
+                    "Invalid request",
+                    "text/plain"
             );
+
             return;
         }
 
@@ -284,53 +738,69 @@ public class LibraryServer {
                 readFormData(exchange);
 
         String bookName =
-                data.get("issueBookName");
+                data.get("bookName");
 
         String memberName =
-                data.get("issueMemberName");
+                data.get("memberName");
 
         if (bookName == null ||
-            memberName == null ||
-            bookName.trim().isEmpty() ||
-            memberName.trim().isEmpty()) {
+                memberName == null ||
+                bookName.isEmpty() ||
+                memberName.isEmpty()) {
 
             sendResponse(
                     exchange,
-                    "Please enter book and member name.",
-                    400
+                    "Please fill all fields",
+                    "text/plain"
             );
+
             return;
         }
 
-        String result =
-                IssueManager.issueBook(
-                        bookName,
-                        memberName
-                );
+        try {
 
-        sendResponse(
-                exchange,
-                "<h2>" + result + "</h2>" +
-                "<a href='/'>Go Back to Library</a>",
-                200
-        );
+            String result =
+                    IssueManager.issueBook(
+                            bookName,
+                            memberName
+                    );
+
+            sendResponse(
+                    exchange,
+                    result,
+                    "text/plain"
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            sendResponse(
+                    exchange,
+                    "Error issuing book: "
+                            + e.getMessage(),
+                    "text/plain"
+            );
+        }
     }
+
 
     // =========================
     // RETURN BOOK
     // =========================
 
-    static void returnBook(HttpExchange exchange)
-            throws IOException {
+    private static void returnBook(
+            HttpExchange exchange) throws IOException {
 
         if (!exchange.getRequestMethod()
                 .equalsIgnoreCase("POST")) {
 
             sendResponse(
                     exchange,
-                    "POST method required.",
-                    405
+                    "Invalid request",
+                    "text/plain"
             );
+
             return;
         }
 
@@ -338,181 +808,122 @@ public class LibraryServer {
                 readFormData(exchange);
 
         String bookName =
-                data.get("returnBookName");
+                data.get("bookName");
 
         String memberName =
-                data.get("returnMemberName");
+                data.get("memberName");
 
         if (bookName == null ||
-            memberName == null ||
-            bookName.trim().isEmpty() ||
-            memberName.trim().isEmpty()) {
+                memberName == null ||
+                bookName.isEmpty() ||
+                memberName.isEmpty()) {
 
             sendResponse(
                     exchange,
-                    "Please enter book and member name.",
-                    400
+                    "Please fill all fields",
+                    "text/plain"
             );
+
             return;
         }
 
-        String result =
-                IssueManager.returnBook(
-                        bookName,
-                        memberName
-                );
-
-        sendResponse(
-                exchange,
-                "<h2>" + result + "</h2>" +
-                "<a href='/'>Go Back to Library</a>",
-                200
-        );
-    }
-
-    // =========================
-    // GET ALL BOOKS
-    // =========================
-
-    static void getBooks(HttpExchange exchange)
-            throws IOException {
-
-        StringBuilder books =
-                new StringBuilder();
-
         try {
 
-            Connection connection =
-                    DBConnection.getConnection();
+            String result =
+                    IssueManager.returnBook(
+                            bookName,
+                            memberName
+                    );
 
-            String sql =
-                    "SELECT book_id, title, author, category, status FROM books";
-
-            PreparedStatement statement =
-                    connection.prepareStatement(sql);
-
-            ResultSet result =
-                    statement.executeQuery();
-
-            while (result.next()) {
-
-                books.append(result.getInt("book_id"))
-                     .append("|")
-                     .append(result.getString("title"))
-                     .append("|")
-                     .append(result.getString("author"))
-                     .append("|")
-                     .append(result.getString("category"))
-                     .append("|")
-                     .append(result.getString("status"))
-                     .append("\n");
-            }
-
-            result.close();
-            statement.close();
-            connection.close();
+            sendResponse(
+                    exchange,
+                    result,
+                    "text/plain"
+            );
 
         } catch (Exception e) {
 
             e.printStackTrace();
+
+            sendResponse(
+                    exchange,
+                    "Error returning book: "
+                            + e.getMessage(),
+                    "text/plain"
+            );
         }
-
-        byte[] response =
-                books.toString().getBytes(
-                        StandardCharsets.UTF_8
-                );
-
-        exchange.getResponseHeaders().set(
-                "Content-Type",
-                "text/plain; charset=UTF-8"
-        );
-
-        exchange.sendResponseHeaders(
-                200,
-                response.length
-        );
-
-        OutputStream output =
-                exchange.getResponseBody();
-
-        output.write(response);
-        output.close();
     }
 
+
     // =========================
-    // DELETE BOOK
+    // REQUEST BOOK
     // =========================
 
-    static void deleteBook(HttpExchange exchange)
-            throws IOException {
+    private static void requestBook(
+            HttpExchange exchange) throws IOException {
 
         if (!exchange.getRequestMethod()
                 .equalsIgnoreCase("POST")) {
 
             sendResponse(
                     exchange,
-                    "POST method required.",
-                    405
+                    "Invalid request",
+                    "text/plain"
             );
+
             return;
         }
 
         Map<String, String> data =
                 readFormData(exchange);
 
-        String bookId =
-                data.get("bookId");
+        String studentName =
+                data.get("studentName");
 
-        if (bookId == null ||
-                bookId.trim().isEmpty()) {
+        String studentId =
+                data.get("studentId");
+
+        String bookName =
+                data.get("bookName");
+
+        if (studentName == null ||
+                studentId == null ||
+                bookName == null ||
+                studentName.isEmpty() ||
+                studentId.isEmpty() ||
+                bookName.isEmpty()) {
 
             sendResponse(
                     exchange,
-                    "Book ID is required.",
-                    400
+                    "Please fill all fields",
+                    "text/plain"
             );
+
             return;
         }
 
-        try {
-
-            Connection connection =
-                    DBConnection.getConnection();
+        try (Connection con =
+                     DBConnection.getConnection()) {
 
             String sql =
-                    "DELETE FROM books WHERE book_id = ?";
+                    "INSERT INTO book_requests " +
+                    "(student_name, student_id, book_name, status) " +
+                    "VALUES (?, ?, ?, 'Pending')";
 
-            PreparedStatement statement =
-                    connection.prepareStatement(sql);
+            PreparedStatement ps =
+                    con.prepareStatement(sql);
 
-            statement.setInt(
-                    1,
-                    Integer.parseInt(bookId)
+            ps.setString(1, studentName);
+            ps.setString(2, studentId);
+            ps.setString(3, bookName);
+
+            ps.executeUpdate();
+
+            sendResponse(
+                    exchange,
+                    "Book Request Submitted Successfully!",
+                    "text/plain"
             );
-
-            int rowsDeleted =
-                    statement.executeUpdate();
-
-            statement.close();
-            connection.close();
-
-            if (rowsDeleted > 0) {
-
-                sendResponse(
-                        exchange,
-                        "<h2>Book deleted successfully! 🗑️</h2>" +
-                        "<a href='/'>Go Back to Library</a>",
-                        200
-                );
-
-            } else {
-
-                sendResponse(
-                        exchange,
-                        "Book not found.",
-                        404
-                );
-            }
 
         } catch (Exception e) {
 
@@ -520,29 +931,372 @@ public class LibraryServer {
 
             sendResponse(
                     exchange,
-                    "Error deleting book.",
-                    500
+                    "Error requesting book: "
+                            + e.getMessage(),
+                    "text/plain"
             );
         }
     }
+
+
+    // =========================
+    // GET REQUESTS
+    // =========================
+
+    private static void getRequests(
+            HttpExchange exchange) throws IOException {
+
+        if (!exchange.getRequestMethod()
+                .equalsIgnoreCase("GET")) {
+
+            sendResponse(
+                    exchange,
+                    "Invalid request",
+                    "text/plain"
+            );
+
+            return;
+        }
+
+        try (Connection con =
+                     DBConnection.getConnection()) {
+
+            String sql =
+                    "SELECT request_id, student_name, " +
+                    "student_id, book_name, status " +
+                    "FROM book_requests " +
+                    "WHERE status = 'Pending'";
+
+            PreparedStatement ps =
+                    con.prepareStatement(sql);
+
+            ResultSet rs =
+                    ps.executeQuery();
+
+            StringBuilder json =
+                    new StringBuilder();
+
+            json.append("[");
+
+            boolean first = true;
+
+            while (rs.next()) {
+
+                if (!first) {
+                    json.append(",");
+                }
+
+                first = false;
+
+                json.append("{");
+
+                json.append("\"requestId\":")
+                        .append(
+                                rs.getInt("request_id")
+                        )
+                        .append(",");
+
+                json.append("\"studentName\":\"")
+                        .append(
+                                escapeJson(
+                                        rs.getString(
+                                                "student_name"
+                                        )
+                                )
+                        )
+                        .append("\",");
+
+                json.append("\"studentId\":\"")
+                        .append(
+                                escapeJson(
+                                        rs.getString(
+                                                "student_id"
+                                        )
+                                )
+                        )
+                        .append("\",");
+
+                json.append("\"bookName\":\"")
+                        .append(
+                                escapeJson(
+                                        rs.getString(
+                                                "book_name"
+                                        )
+                                )
+                        )
+                        .append("\",");
+
+                json.append("\"status\":\"")
+                        .append(
+                                escapeJson(
+                                        rs.getString(
+                                                "status"
+                                        )
+                                )
+                        )
+                        .append("\"");
+
+                json.append("}");
+            }
+
+            json.append("]");
+
+            sendResponse(
+                    exchange,
+                    json.toString(),
+                    "application/json"
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            sendResponse(
+                    exchange,
+                    "Error getting requests: "
+                            + e.getMessage(),
+                    "text/plain"
+            );
+        }
+    }
+
+
+    // =========================
+    // UPDATE REQUEST
+    // =========================
+
+    private static void updateRequest(
+            HttpExchange exchange) throws IOException {
+
+        if (!exchange.getRequestMethod()
+                .equalsIgnoreCase("POST")) {
+
+            sendResponse(
+                    exchange,
+                    "Invalid request",
+                    "text/plain"
+            );
+
+            return;
+        }
+
+        Map<String, String> data =
+                readFormData(exchange);
+
+        String requestId =
+                data.get("requestId");
+
+        String status =
+                data.get("status");
+
+        if (requestId == null ||
+                status == null ||
+                requestId.isEmpty() ||
+                status.isEmpty()) {
+
+            sendResponse(
+                    exchange,
+                    "Invalid request data",
+                    "text/plain"
+            );
+
+            return;
+        }
+
+        try (Connection con =
+                     DBConnection.getConnection()) {
+
+            // =========================
+            // APPROVE REQUEST
+            // =========================
+
+            if (status.equalsIgnoreCase("Approved")) {
+
+                String selectSql =
+                        "SELECT student_name, book_name " +
+                        "FROM book_requests " +
+                        "WHERE request_id = ?";
+
+                PreparedStatement selectPs =
+                        con.prepareStatement(selectSql);
+
+                selectPs.setInt(
+                        1,
+                        Integer.parseInt(requestId)
+                );
+
+                ResultSet rs =
+                        selectPs.executeQuery();
+
+                if (!rs.next()) {
+
+                    rs.close();
+                    selectPs.close();
+
+                    sendResponse(
+                            exchange,
+                            "Request not found.",
+                            "text/plain"
+                    );
+
+                    return;
+                }
+
+                String studentName =
+                        rs.getString("student_name");
+
+                String bookName =
+                        rs.getString("book_name");
+
+                rs.close();
+                selectPs.close();
+
+                // Automatically issue the requested book
+                String issueResult =
+                        IssueManager.issueBook(
+                                bookName,
+                                studentName
+                        );
+
+                // If issuing failed, do not approve the request
+                if (!issueResult.contains(
+                        "Book issued successfully")) {
+
+                    sendResponse(
+                            exchange,
+                            issueResult,
+                            "text/plain"
+                    );
+
+                    return;
+                }
+
+                // Update request status to Approved
+                String updateSql =
+                        "UPDATE book_requests " +
+                        "SET status = ? " +
+                        "WHERE request_id = ?";
+
+                PreparedStatement updatePs =
+                        con.prepareStatement(updateSql);
+
+                updatePs.setString(
+                        1,
+                        "Approved"
+                );
+
+                updatePs.setInt(
+                        2,
+                        Integer.parseInt(requestId)
+                );
+
+                updatePs.executeUpdate();
+
+                updatePs.close();
+
+                sendResponse(
+                        exchange,
+                        "Request approved and book issued successfully!",
+                        "text/plain"
+                );
+
+                return;
+            }
+
+
+            // =========================
+            // REJECT REQUEST
+            // =========================
+
+            if (status.equalsIgnoreCase("Rejected")) {
+
+                String sql =
+                        "UPDATE book_requests " +
+                        "SET status = ? " +
+                        "WHERE request_id = ?";
+
+                PreparedStatement ps =
+                        con.prepareStatement(sql);
+
+                ps.setString(
+                        1,
+                        "Rejected"
+                );
+
+                ps.setInt(
+                        2,
+                        Integer.parseInt(requestId)
+                );
+
+                int rows =
+                        ps.executeUpdate();
+
+                ps.close();
+
+                if (rows > 0) {
+
+                    sendResponse(
+                            exchange,
+                            "Request rejected successfully!",
+                            "text/plain"
+                    );
+
+                } else {
+
+                    sendResponse(
+                            exchange,
+                            "Request not found.",
+                            "text/plain"
+                    );
+                }
+
+                return;
+            }
+
+
+            // =========================
+            // INVALID STATUS
+            // =========================
+
+            sendResponse(
+                    exchange,
+                    "Invalid status.",
+                    "text/plain"
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            sendResponse(
+                    exchange,
+                    "Error updating request: "
+                            + e.getMessage(),
+                    "text/plain"
+            );
+        }
+    }
+
 
     // =========================
     // READ FORM DATA
     // =========================
 
-    static Map<String, String> readFormData(
-            HttpExchange exchange)
-            throws IOException {
+    private static Map<String, String> readFormData(
+            HttpExchange exchange) throws IOException {
 
         String body =
                 new String(
-                        exchange.getRequestBody()
-                                .readAllBytes(),
+                        exchange.getRequestBody().readAllBytes(),
                         StandardCharsets.UTF_8
                 );
 
         Map<String, String> data =
                 new HashMap<>();
+
+        if (body.isEmpty()) {
+            return data;
+        }
 
         String[] pairs =
                 body.split("&");
@@ -552,56 +1306,125 @@ public class LibraryServer {
             String[] keyValue =
                     pair.split("=", 2);
 
-            if (keyValue.length == 2) {
+            String key =
+                    URLDecoder.decode(
+                            keyValue[0],
+                            StandardCharsets.UTF_8
+                    );
 
-                String key =
-                        URLDecoder.decode(
-                                keyValue[0],
-                                StandardCharsets.UTF_8
-                        );
+            String value = "";
 
-                String value =
+            if (keyValue.length > 1) {
+
+                value =
                         URLDecoder.decode(
                                 keyValue[1],
                                 StandardCharsets.UTF_8
                         );
-
-                data.put(key, value);
             }
+
+            data.put(key, value);
         }
 
         return data;
     }
 
+
+    // =========================
+    // SEND FILE
+    // =========================
+
+    private static void sendFile(
+            HttpExchange exchange,
+            String fileName,
+            String contentType) throws IOException {
+
+        try {
+
+            byte[] content =
+                    Files.readAllBytes(
+                            Paths.get(fileName)
+                    );
+
+            exchange.getResponseHeaders()
+                    .set(
+                            "Content-Type",
+                            contentType +
+                                    "; charset=UTF-8"
+                    );
+
+            exchange.sendResponseHeaders(
+                    200,
+                    content.length
+            );
+
+            OutputStream os =
+                    exchange.getResponseBody();
+
+            os.write(content);
+            os.close();
+
+        } catch (Exception e) {
+
+            sendResponse(
+                    exchange,
+                    "File not found: "
+                            + fileName,
+                    "text/plain"
+            );
+        }
+    }
+
+
     // =========================
     // SEND RESPONSE
     // =========================
 
-    static void sendResponse(
+    private static void sendResponse(
             HttpExchange exchange,
-            String message,
-            int statusCode)
-            throws IOException {
+            String response,
+            String contentType) throws IOException {
 
-        byte[] response =
-                message.getBytes(
+        byte[] bytes =
+                response.getBytes(
                         StandardCharsets.UTF_8
                 );
 
-        exchange.getResponseHeaders().set(
-                "Content-Type",
-                "text/html; charset=UTF-8"
-        );
+        exchange.getResponseHeaders()
+                .set(
+                        "Content-Type",
+                        contentType +
+                                "; charset=UTF-8"
+                );
 
         exchange.sendResponseHeaders(
-                statusCode,
-                response.length
+                200,
+                bytes.length
         );
 
-        OutputStream output =
+        OutputStream os =
                 exchange.getResponseBody();
 
-        output.write(response);
-        output.close();
+        os.write(bytes);
+        os.close();
+    }
+
+
+    // =========================
+    // JSON ESCAPE
+    // =========================
+
+    private static String escapeJson(
+            String text) {
+
+        if (text == null) {
+            return "";
+        }
+
+        return text
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
     }
 }

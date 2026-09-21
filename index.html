@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Management System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 40px;
+            color: #263238;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #607d8b;
+        }
+
+        .portals {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .portal {
+            width: 380px;
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .portal-icon {
+            font-size: 65px;
+            margin-bottom: 20px;
+        }
+
+        .portal h2 {
+            font-size: 28px;
+            margin-bottom: 12px;
+            color: #263238;
+        }
+
+        .portal p {
+            color: #78909c;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .portal button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+
+        .student-btn {
+            background: #1976d2;
+        }
+
+        .student-btn:hover {
+            background: #1565c0;
+        }
+
+        .librarian-btn {
+            background: #7b1fa2;
+        }
+
+        .librarian-btn:hover {
+            background: #6a1b9a;
+        }
+
+        .footer {
+            margin-top: 35px;
+            color: #78909c;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>📚 Library Management System</h1>
+        <p>Welcome! Please select your portal.</p>
+    </div>
+
+    <div class="portals">
+
+        <!-- Student Portal -->
+        <div class="portal">
+
+            <div class="portal-icon">🎓</div>
+
+            <h2>Student Portal</h2>
+
+            <p>
+                Access available books, request books,
+                and manage your library activities.
+            </p>
+
+            <button
+                class="student-btn"
+                onclick="window.location.href='/student.html'">
+                Enter Student Portal
+            </button>
+
+        </div>
+
+
+        <!-- Librarian Portal -->
+        <div class="portal">
+
+            <div class="portal-icon">👩‍💼</div>
+
+            <h2>Librarian Portal</h2>
+
+            <p>
+                Manage books, members, issues,
+                returns, and student book requests.
+            </p>
+
+            <button
+                class="librarian-btn"
+                onclick="window.location.href='/librarian.html'">
+                Enter Librarian Portal
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>Library Management System © 2026</p>
+    </div>
+
+</div>
+
+</body>
+</html>

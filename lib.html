@@ -1,24 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Management System</title>
-
-    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="/style1.css">
 </head>
 
 <body>
 
-    <!-- Header -->
-    <header>
-        <h1>📚 Library Management System</h1>
-        <p>Manage Books, Members and Library Records</p>
-    </header>
+<header>
+    <h1>📚 Library Management System</h1>
 
-
-    <!-- Navigation Bar -->
     <nav>
         <a href="#home">Home</a>
         <a href="#books">Books</a>
@@ -26,301 +19,914 @@
         <a href="#issue">Issue Book</a>
         <a href="#return">Return Book</a>
     </nav>
+</header>
 
 
-    <!-- Home Section -->
-    <section id="home" class="hero">
-        <h2>Welcome to the Library</h2>
-        <p>Manage your library easily and efficiently.</p>
+<!-- HOME -->
+<section id="home">
+    <h2>Welcome to Library Management System</h2>
+    <p>Manage books, members, book issues, returns and student requests easily.</p>
+</section>
 
-        <div class="buttons">
-            <a href="#books" class="button">Manage Books</a>
-            <a href="#members" class="button">Manage Members</a>
-        </div>
-    </section>
 
+<!-- BOOKS -->
+<section id="books">
+    <h2>📚 Available Books</h2>
 
-    <!-- Books Section -->
-     <section id="books" class="section books-section">
-        <h2>📖 Book Management</h2>
+    <form id="addBookForm">
 
-        <!-- Add Book Form -->
-        <div class="form-container">
+        <input
+            type="text"
+            id="bookTitle"
+            placeholder="Book Name"
+            required
+        >
 
-            <h3>Add a New Book</h3>
+        <input
+            type="text"
+            id="bookAuthor"
+            placeholder="Author"
+            required
+        >
 
-            <form action="/addBook" method="post">
+        <input
+            type="text"
+            id="bookCategory"
+            placeholder="Category"
+            required
+        >
 
-                <label for="bookName">Book Name</label>
-                <input type="text" id="bookName" name="bookName"
-                    placeholder="Enter book name" required>
+        <button type="submit">Add Book</button>
 
-                <label for="author">Author</label>
-                <input type="text" id="author" name="author"
-                    placeholder="Enter author name" required>
+    </form>
 
-                <label for="category">Category</label>
-                <input type="text" id="category" name="category"
-                    placeholder="Enter category" required>
+    <br>
 
-                <button type="submit">Add Book</button>
+    <form id="searchBookForm">
 
-            </form>
+        <input
+            type="text"
+            id="searchBookName"
+            placeholder="Enter book name"
+        >
 
-        </div>
+        <button type="submit">Search Book</button>
 
+    </form>
 
-        <!-- Available Books -->
-        <div class="books-container">
+    <br>
 
-            <h3>Available Books</h3>
+    <table border="1" id="booksTable">
 
-            <!-- Search -->
-            <form action="/searchBook" method="post" class="search-box">
+        <thead>
+            <tr>
+                <th>Book Name</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
 
-                <input type="text" id="searchBook" name="searchBook"
-                    placeholder="Search for a book..." required>
+        <tbody id="booksBody">
+        </tbody>
 
-                <button type="submit">🔍 Search</button>
+    </table>
+</section>
 
-            </form>
 
+<!-- MEMBERS -->
+<section id="members">
 
-            <!-- Books Table -->
-            <table>
+    <h2>👤 Add Member</h2>
 
-                <thead>
-                    <tr>
-                        <th>Book Name</th>
-                        <th>Author</th>
-                        <th>Category</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
+    <form id="addMemberForm">
 
-                <tbody id="booksTableBody">
-                </tbody>
+        <input
+            type="text"
+            name="memberName"
+            placeholder="Member Name"
+            required
+        >
 
-            </table>
+        <input
+            type="text"
+            name="department"
+            placeholder="Department"
+            required
+        >
 
-        </div>
+        <button type="submit">Add Member</button>
 
-    </section>
+    </form>
 
+</section>
 
-    <!-- Members Section -->
-    <section id="members" class="section members-section">
 
-        <h2>👨‍🎓 Member Management</h2>
+<!-- ISSUE BOOK -->
+<section id="issue">
 
-        <div class="form-container">
+    <h2>📖 Issue Book</h2>
 
-            <h3>Add Member</h3>
+    <form id="issueBookForm">
 
-            <form action="/addMember" method="post">
+        <input
+            type="text"
+            name="bookName"
+            placeholder="Book Name"
+            required
+        >
 
-                <label for="memberName">Member Name</label>
-                <input type="text" id="memberName" name="memberName"
-                    placeholder="Enter member name" required>
+        <input
+            type="text"
+            name="memberName"
+            placeholder="Member Name"
+            required
+        >
 
-                <label for="department">Department</label>
-                <input type="text" id="department" name="department"
-                    placeholder="Enter department" required>
+        <button type="submit">Issue Book</button>
 
-                <button type="submit">Add Member</button>
+    </form>
 
-            </form>
+</section>
 
-        </div>
 
-    </section>
+<!-- RETURN BOOK -->
+<section id="return">
 
+    <h2>🔄 Return Book</h2>
 
-    <!-- Issue Book Section -->
-    <section id="issue" class="section issue-section">
+    <form id="returnBookForm">
 
-        <h2>📕 Issue Book</h2>
+        <input
+            type="text"
+            name="bookName"
+            placeholder="Book Name"
+            required
+        >
 
-        <div class="form-container">
+        <input
+            type="text"
+            name="memberName"
+            placeholder="Member Name"
+            required
+        >
 
-            <form action="/issueBook" method="post">
+        <!-- IMPORTANT:
+             This is NOT a submit button.
+             JavaScript handles the request.
+        -->
 
-                <label for="issueBookName">Book Name</label>
-                <input type="text" id="issueBookName" name="issueBookName"
-                    placeholder="Enter book name" required>
+        <button type="button" id="returnBookButton">
+            Return Book
+        </button>
 
-                <label for="issueMemberName">Member Name</label>
-                <input type="text" id="issueMemberName" name="issueMemberName"
-                    placeholder="Enter member name" required>
+    </form>
 
-                <button type="submit">Issue Book</button>
+</section>
 
-            </form>
 
-        </div>
+<!-- REQUEST BOOK -->
+<section id="request">
 
-    </section>
+    <h2>📚 Request / Order a Book</h2>
 
+    <h3>📚 Request Book</h3>
 
-    <!-- Return Book Section -->
-    <section id="return" class="section return-section">
+    <form id="requestBookForm">
 
-        <h2>📗 Return Book</h2>
+        <input
+            type="text"
+            name="studentName"
+            placeholder="Student Name"
+            required
+        >
 
-        <div class="form-container">
+        <input
+            type="text"
+            name="studentId"
+            placeholder="Student ID"
+            required
+        >
 
-            <form action="/returnBook" method="post">
+        <input
+            type="text"
+            name="bookName"
+            placeholder="Book Name"
+            required
+        >
 
-                <label for="returnBookName">Book Name</label>
-                <input type="text" id="returnBookName" name="returnBookName"
-                    placeholder="Enter book name" required>
+        <!-- IMPORTANT:
+             This is NOT a submit button.
+             JavaScript handles the request.
+        -->
 
-                <label for="returnMemberName">Member Name</label>
-                <input type="text" id="returnMemberName" name="returnMemberName"
-                    placeholder="Enter member name" required>
+        <button type="button" id="requestBookButton">
+            Request Book
+        </button>
 
-                <button type="submit">Return Book</button>
+    </form>
 
-            </form>
+</section>
 
-        </div>
 
-    </section>
+<!-- STUDENT BOOK REQUESTS -->
+<section id="studentRequests">
 
+    <h2>📋 Student Book Requests</h2>
 
-    <!-- Footer -->
-    <footer>
-        <p>© 2026 Library Management System</p>
-    </footer>
+    <table border="1">
 
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Student ID</th>
+                <th>Book Name</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
 
-    <!-- Load books from the database -->
-    <script>
+        <tbody id="requestsBody">
+        </tbody>
 
-        function loadBooks() {
+    </table>
 
-            fetch("/getBooks")
-                .then(response => response.text())
-                .then(data => {
+</section>
 
-                    const tableBody =
-                        document.getElementById("booksTableBody");
 
-                    tableBody.innerHTML = "";
+<script>
 
-                    if (data.trim() === "") return;
+/* =====================================================
+   LOAD BOOKS
+   ===================================================== */
 
-                    const books =
-                        data.trim().split("\n");
+function loadBooks() {
 
-                    books.forEach(book => {
+    fetch("/getBooks")
 
-                        const details =
-                            book.split("|");
+    .then(response => response.json())
 
-                        // First value is the unique Book ID
-                        const bookId = details[0];
+    .then(books => {
 
-                        const row =
-                            document.createElement("tr");
+        const tbody = document.getElementById("booksBody");
 
-                        // Display Book Name, Author, Category and Status
-                        for (let i = 1; i < details.length; i++) {
+        tbody.innerHTML = "";
 
-                            const cell =
-                                document.createElement("td");
+        if (books.length === 0) {
 
-                            cell.textContent =
-                                details[i];
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5">No books available.</td>
+                </tr>
+            `;
 
-                            row.appendChild(cell);
-                        }
-
-                        // Create Delete button
-                        const actionCell =
-                            document.createElement("td");
-
-                        const deleteButton =
-                            document.createElement("button");
-
-                        deleteButton.textContent =
-                            "🗑️ Delete";
-
-                        deleteButton.type =
-                            "button";
-
-                        deleteButton.onclick =
-                            function () {
-
-                                const confirmDelete =
-                                    confirm(
-                                        "Are you sure you want to delete this book?"
-                                    );
-
-                                if (!confirmDelete) return;
-
-                                fetch("/deleteBook", {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type":
-                                            "application/x-www-form-urlencoded"
-                                    },
-                                    body:
-                                        "bookId=" +
-                                        encodeURIComponent(bookId)
-                                })
-                                .then(response =>
-                                    response.text()
-                                )
-                                .then(message => {
-
-                                    alert(
-                                        "Book deleted successfully!"
-                                    );
-
-                                    // Reload the books automatically
-                                    loadBooks();
-                                })
-                                .catch(error => {
-
-                                    console.error(
-                                        "Error deleting book:",
-                                        error
-                                    );
-
-                                    alert(
-                                        "Error deleting book."
-                                    );
-                                });
-                            };
-
-                        actionCell.appendChild(
-                            deleteButton
-                        );
-
-                        row.appendChild(
-                            actionCell
-                        );
-
-                        tableBody.appendChild(
-                            row
-                        );
-                    });
-                })
-                .catch(error => {
-                    console.error(
-                        "Error loading books:",
-                        error
-                    );
-                });
+            return;
         }
 
-        // Load books when the page opens
+        books.forEach(book => {
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.category}</td>
+                <td>${book.status}</td>
+
+                <td>
+                    <button onclick="deleteBook('${escapeValue(book.title)}')">
+                        Delete
+                    </button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+
+        });
+
+    })
+
+    .catch(error => {
+
+        console.error("Error loading books:", error);
+
+    });
+
+}
+
+
+/* =====================================================
+   ESCAPE BOOK NAME
+   ===================================================== */
+
+function escapeValue(value) {
+
+    return value
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'");
+
+}
+
+
+/* =====================================================
+   ADD BOOK
+   ===================================================== */
+
+document.getElementById("addBookForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const title =
+        document.getElementById("bookTitle").value.trim();
+
+    const author =
+        document.getElementById("bookAuthor").value.trim();
+
+    const category =
+        document.getElementById("bookCategory").value.trim();
+
+
+    if (!title || !author || !category) {
+
+        alert("Please fill all fields.");
+
+        return;
+
+    }
+
+
+    const formData = new URLSearchParams();
+
+    formData.append("title", title);
+    formData.append("author", author);
+    formData.append("category", category);
+
+
+    fetch("/addBook", {
+
+        method: "POST",
+
+        body: formData
+
+    })
+
+    .then(response => response.text())
+
+    .then(message => {
+
+        alert(message);
+
+        if (message.toLowerCase().includes("successfully")) {
+
+            document.getElementById("addBookForm").reset();
+
+            loadBooks();
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert("Error adding book.");
+
+    });
+
+});
+
+
+/* =====================================================
+   SEARCH BOOK
+   ===================================================== */
+
+document.getElementById("searchBookForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const bookName =
+        document.getElementById("searchBookName").value.trim();
+
+
+    if (!bookName) {
+
+        alert("Please enter a book name.");
+
+        return;
+
+    }
+
+
+    const formData = new URLSearchParams();
+
+    formData.append("bookName", bookName);
+
+
+    fetch("/searchBook", {
+
+        method: "POST",
+
+        body: formData
+
+    })
+
+    .then(response => response.text())
+
+    .then(message => {
+
+        alert(message);
+
+        document.getElementById("searchBookForm").reset();
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert("Error searching book.");
+
+    });
+
+});
+
+
+/* =====================================================
+   DELETE BOOK
+   ===================================================== */
+
+function deleteBook(bookName) {
+
+    if (!confirm("Are you sure you want to delete this book?")) {
+
+        return;
+
+    }
+
+
+    const formData = new URLSearchParams();
+
+    formData.append("bookName", bookName);
+
+
+    fetch("/deleteBook", {
+
+        method: "POST",
+
+        body: formData
+
+    })
+
+    .then(response => response.text())
+
+    .then(message => {
+
+        alert(message);
+
         loadBooks();
 
-    </script>
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert("Error deleting book.");
+
+    });
+
+}
+
+
+/* =====================================================
+   COMMON FORM SUBMISSION
+   ===================================================== */
+
+function submitForm(form, url, afterSuccess) {
+
+    const formData = new FormData(form);
+
+
+    fetch(url, {
+
+        method: "POST",
+
+        body: new URLSearchParams(formData)
+
+    })
+
+    .then(response => response.text())
+
+    .then(message => {
+
+        alert(message);
+
+
+        if (
+            !message.toLowerCase().includes("not found") &&
+            !message.toLowerCase().includes("already") &&
+            !message.toLowerCase().includes("error") &&
+            !message.toLowerCase().includes("please fill")
+        ) {
+
+            form.reset();
+
+        }
+
+
+        if (afterSuccess) {
+
+            afterSuccess(message);
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert("Something went wrong.");
+
+    });
+
+}
+
+
+/* =====================================================
+   ADD MEMBER
+   ===================================================== */
+
+document.getElementById("addMemberForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    submitForm(
+
+        this,
+
+        "/addMember",
+
+        function() {
+
+        }
+
+    );
+
+});
+
+
+/* =====================================================
+   ISSUE BOOK
+   ===================================================== */
+
+document.getElementById("issueBookForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    submitForm(
+
+        this,
+
+        "/issueBook",
+
+        function() {
+
+            loadBooks();
+
+        }
+
+    );
+
+});
+
+
+/* =====================================================
+   RETURN BOOK
+   ===================================================== */
+
+/*
+   IMPORTANT:
+   The button is type="button", so the browser
+   cannot submit the form by itself.
+*/
+
+document.getElementById("returnBookButton")
+.addEventListener("click", function() {
+
+    const form =
+        document.getElementById("returnBookForm");
+
+    const bookName =
+        form.querySelector('[name="bookName"]').value.trim();
+
+    const memberName =
+        form.querySelector('[name="memberName"]').value.trim();
+
+
+    if (!bookName || !memberName) {
+
+        alert("Please fill all fields.");
+
+        return;
+
+    }
+
+
+    const formData = new URLSearchParams();
+
+    formData.append("bookName", bookName);
+
+    formData.append("memberName", memberName);
+
+
+    fetch("/returnBook", {
+
+        method: "POST",
+
+        body: formData
+
+    })
+
+    .then(response => response.text())
+
+    .then(message => {
+
+        /*
+           THIS IS THE ONLY MESSAGE THE USER SEES.
+           It appears as a popup with OK.
+        */
+
+        alert(message);
+
+
+        /*
+           Clear fields only after successful return.
+        */
+
+        if (
+            message.toLowerCase().includes("returned successfully")
+        ) {
+
+            form.reset();
+
+            loadBooks();
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error("Return error:", error);
+
+        alert("Error returning book.");
+
+    });
+
+});
+
+
+/* =====================================================
+   REQUEST BOOK
+   ===================================================== */
+
+/*
+   IMPORTANT:
+   The button is type="button", so the browser
+   cannot submit the form by itself.
+*/
+
+document.getElementById("requestBookButton")
+.addEventListener("click", function() {
+
+    const form =
+        document.getElementById("requestBookForm");
+
+
+    const studentName =
+        form.querySelector('[name="studentName"]').value.trim();
+
+    const studentId =
+        form.querySelector('[name="studentId"]').value.trim();
+
+    const bookName =
+        form.querySelector('[name="bookName"]').value.trim();
+
+
+    if (!studentName || !studentId || !bookName) {
+
+        alert("Please fill all fields.");
+
+        return;
+
+    }
+
+
+    const formData = new URLSearchParams();
+
+    formData.append("studentName", studentName);
+
+    formData.append("studentId", studentId);
+
+    formData.append("bookName", bookName);
+
+
+    fetch("/requestBook", {
+
+        method: "POST",
+
+        body: formData
+
+    })
+
+    .then(response => response.text())
+
+    .then(message => {
+
+        /*
+           THIS WILL SHOW:
+
+           Book Request Submitted Successfully!
+
+           [ OK ]
+
+           It will NOT become a webpage.
+        */
+
+        alert(message);
+
+
+        /*
+           After pressing OK, clear the fields.
+        */
+
+        if (
+            message.toLowerCase().includes("successfully")
+        ) {
+
+            form.reset();
+
+            loadRequests();
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error("Request error:", error);
+
+        alert("Error submitting book request.");
+
+    });
+
+});
+
+
+/* =====================================================
+   LOAD BOOK REQUESTS
+   ===================================================== */
+
+function loadRequests() {
+
+    fetch("/getRequests")
+
+    .then(response => response.json())
+
+    .then(requests => {
+
+        const tbody =
+            document.getElementById("requestsBody");
+
+        tbody.innerHTML = "";
+
+
+        if (requests.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        No pending book requests.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        requests.forEach(request => {
+
+            const row = document.createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>${request.studentName}</td>
+
+                <td>${request.studentId}</td>
+
+                <td>${request.bookName}</td>
+
+                <td>${request.status}</td>
+
+                <td>
+
+                    <button
+                        onclick="updateRequest(${request.requestId}, 'Approved')">
+                        Approve
+                    </button>
+
+                    <button
+                        onclick="updateRequest(${request.requestId}, 'Rejected')">
+                        Reject
+                    </button>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(row);
+
+        });
+
+    })
+
+    .catch(error => {
+
+        console.error("Error loading requests:", error);
+
+    });
+
+}
+
+
+/* =====================================================
+   APPROVE / REJECT REQUEST
+   ===================================================== */
+
+function updateRequest(requestId, status) {
+
+    const formData = new URLSearchParams();
+
+    formData.append("requestId", requestId);
+
+    formData.append("status", status);
+
+
+    fetch("/updateRequest", {
+
+        method: "POST",
+
+        body: formData
+
+    })
+
+    .then(response => response.text())
+
+    .then(message => {
+
+        alert(message);
+
+        loadRequests();
+
+        loadBooks();
+
+    })
+
+    .catch(error => {
+
+        console.error("Error updating request:", error);
+
+        alert("Error updating request.");
+
+    });
+
+}
+
+
+/* =====================================================
+   PAGE LOAD
+   ===================================================== */
+
+window.addEventListener("load", function() {
+
+    loadBooks();
+
+    loadRequests();
+
+});
+
+</script>
 
 </body>
-
 </html>

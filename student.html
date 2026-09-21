@@ -1,0 +1,780 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Portal - Library Management System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #263238;
+        }
+
+        header {
+            background: #1976d2;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 25px;
+        }
+
+        .logout {
+            background: white;
+            color: #1976d2;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        .welcome {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            margin-bottom: 10px;
+            color: #1976d2;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .card-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #607d8b;
+            margin-bottom: 18px;
+        }
+
+        .card button {
+            border: none;
+            padding: 11px 20px;
+            border-radius: 8px;
+            background: #1976d2;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+            color: #1976d2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #e3f2fd;
+        }
+
+        form {
+            display: grid;
+            gap: 15px;
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        form button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #1976d2;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #78909c;
+        }
+
+        @media(max-width:600px) {
+
+            header {
+                padding: 15px 20px;
+            }
+
+            header h1 {
+                font-size: 20px;
+            }
+
+            .container {
+                width: 94%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <h1>🎓 Student Portal</h1>
+
+    <button class="logout"
+            onclick="window.location.href='/'">
+        Logout
+    </button>
+
+</header>
+
+
+<div class="container">
+
+    <!-- Welcome -->
+
+    <div class="welcome">
+
+        <h2>Welcome, Student! 👋</h2>
+
+        <p>
+            Manage your library activities from your student dashboard.
+        </p>
+
+    </div>
+
+
+    <!-- Dashboard Cards -->
+
+    <div class="cards">
+
+        <!-- Register as Member -->
+
+        <div class="card">
+
+            <div class="card-icon">👤</div>
+
+            <h3>Register as Member</h3>
+
+            <p>
+                Register yourself as a library member.
+            </p>
+
+            <button onclick="showSection('register')">
+                Register Now
+            </button>
+
+        </div>
+
+
+        <!-- Available Books -->
+
+        <div class="card">
+
+            <div class="card-icon">📚</div>
+
+            <h3>Available Books</h3>
+
+            <p>
+                View books currently available in the library.
+            </p>
+
+            <button onclick="showSection('books')">
+                View Books
+            </button>
+
+        </div>
+
+
+        <!-- Request Book -->
+
+        <div class="card">
+
+            <div class="card-icon">📖</div>
+
+            <h3>Request a Book</h3>
+
+            <p>
+                Request a book from the librarian.
+            </p>
+
+            <button onclick="showSection('request')">
+                Request Book
+            </button>
+
+        </div>
+
+
+        <!-- Return Book -->
+
+        <div class="card">
+
+            <div class="card-icon">📗</div>
+
+            <h3>Return Book</h3>
+
+            <p>
+                Return a book that you have borrowed.
+            </p>
+
+            <button onclick="showSection('return')">
+                Return Book
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Register as Member -->
+
+    <div class="section" id="register">
+
+        <h2>👤 Register as Library Member</h2>
+
+        <form onsubmit="registerMember(event)">
+
+            <input
+                type="text"
+                id="registerName"
+                placeholder="Student Name"
+                required>
+
+            <input
+                type="text"
+                id="registerStudentId"
+                placeholder="Student ID"
+                required>
+
+            <input
+                type="text"
+                id="registerDepartment"
+                placeholder="Department"
+                required>
+
+            <button type="submit">
+                ✅ Register as Member
+            </button>
+
+        </form>
+
+        <div
+            id="registerMessage"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- Available Books -->
+
+    <div class="section" id="books">
+
+        <h2>📚 Available Books</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Book Name</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="bookTable">
+
+                <tr>
+                    <td colspan="4">
+                        Loading books...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- Request Book -->
+
+    <div class="section" id="request">
+
+        <h2>📖 Request / Order a Book</h2>
+
+        <form onsubmit="requestBook(event)">
+
+            <input
+                type="text"
+                id="studentName"
+                placeholder="Student Name"
+                required>
+
+            <input
+                type="text"
+                id="studentId"
+                placeholder="Student ID"
+                required>
+
+            <input
+                type="text"
+                id="bookName"
+                placeholder="Book Name"
+                required>
+
+            <button type="submit">
+                📚 Request Book
+            </button>
+
+        </form>
+
+        <div
+            id="requestMessage"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- Return Book -->
+
+    <div class="section" id="return">
+
+        <h2>📗 Return Book</h2>
+
+        <form onsubmit="returnBook(event)">
+
+            <input
+                type="text"
+                id="returnBookName"
+                placeholder="Book Name"
+                required>
+
+            <input
+                type="text"
+                id="returnMemberName"
+                placeholder="Student Name"
+                required>
+
+            <button type="submit">
+                📗 Return Book
+            </button>
+
+        </form>
+
+        <div
+            id="returnMessage"
+            class="message">
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    Library Management System © 2026
+
+</footer>
+
+
+<script>
+
+    // ================= SHOW SECTION =================
+
+    function showSection(id) {
+
+        document.getElementById(id).scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+
+    // ================= REGISTER MEMBER =================
+
+    function registerMember(event) {
+
+        event.preventDefault();
+
+        const studentName =
+            document.getElementById("registerName").value.trim();
+
+        const studentId =
+            document.getElementById("registerStudentId").value.trim();
+
+        const department =
+            document.getElementById("registerDepartment").value.trim();
+
+        if (!studentName || !studentId || !department) {
+
+            alert("Please fill all fields.");
+
+            return;
+        }
+
+        const data =
+            "studentName=" +
+            encodeURIComponent(studentName) +
+
+            "&studentId=" +
+            encodeURIComponent(studentId) +
+
+            "&department=" +
+            encodeURIComponent(department);
+
+
+        fetch("/registerMember", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+            },
+
+            body: data
+
+        })
+
+        .then(response =>
+            response.text()
+        )
+
+        .then(result => {
+
+            alert(result);
+
+            if (result.includes("Successfully")) {
+
+                document.querySelector(
+                    "#register form"
+                ).reset();
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            alert("Error registering as member.");
+
+        });
+
+    }
+
+
+    // ================= LOAD BOOKS =================
+
+    function loadBooks() {
+
+        fetch("/getBooks")
+
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error("Unable to connect to server");
+                }
+
+                return response.json();
+
+            })
+
+            .then(books => {
+
+                const table =
+                    document.getElementById("bookTable");
+
+                table.innerHTML = "";
+
+                if (!Array.isArray(books) ||
+                    books.length === 0) {
+
+                    table.innerHTML =
+                        "<tr>" +
+                        "<td colspan='4'>" +
+                        "No books available" +
+                        "</td>" +
+                        "</tr>";
+
+                    return;
+                }
+
+                books.forEach(book => {
+
+                    const tr =
+                        document.createElement("tr");
+
+                    tr.innerHTML =
+                        "<td>" +
+                        book.title +
+                        "</td>" +
+
+                        "<td>" +
+                        book.author +
+                        "</td>" +
+
+                        "<td>" +
+                        book.category +
+                        "</td>" +
+
+                        "<td>" +
+                        book.status +
+                        "</td>";
+
+                    table.appendChild(tr);
+
+                });
+
+            })
+
+            .catch(error => {
+
+                console.error(
+                    "Error loading books:",
+                    error
+                );
+
+                document.getElementById(
+                    "bookTable"
+                ).innerHTML =
+                    "<tr>" +
+                    "<td colspan='4'>" +
+                    "Unable to load books" +
+                    "</td>" +
+                    "</tr>";
+
+            });
+
+    }
+
+
+    // ================= REQUEST BOOK =================
+
+    function requestBook(event) {
+
+        event.preventDefault();
+
+        const studentName =
+            document.getElementById("studentName").value.trim();
+
+        const studentId =
+            document.getElementById("studentId").value.trim();
+
+        const bookName =
+            document.getElementById("bookName").value.trim();
+
+        if (!studentName || !studentId || !bookName) {
+
+            alert("Please fill all fields.");
+
+            return;
+        }
+
+        const data =
+            "studentName=" +
+            encodeURIComponent(studentName) +
+
+            "&studentId=" +
+            encodeURIComponent(studentId) +
+
+            "&bookName=" +
+            encodeURIComponent(bookName);
+
+
+        fetch("/requestBook", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+            },
+
+            body: data
+
+        })
+
+        .then(response =>
+            response.text()
+        )
+
+        .then(result => {
+
+            // Show popup message
+            alert(result);
+
+            // Clear fields after successful request
+            if (result.includes("Successfully")) {
+
+                document.querySelector(
+                    "#request form"
+                ).reset();
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            alert("Error submitting request.");
+
+        });
+
+    }
+
+
+    // ================= RETURN BOOK =================
+
+    function returnBook(event) {
+
+        event.preventDefault();
+
+        const bookName =
+            document.getElementById("returnBookName").value.trim();
+
+        const memberName =
+            document.getElementById("returnMemberName").value.trim();
+
+        if (!bookName || !memberName) {
+
+            alert("Please fill all fields.");
+
+            return;
+        }
+
+        const data =
+            "bookName=" +
+            encodeURIComponent(bookName) +
+
+            "&memberName=" +
+            encodeURIComponent(memberName);
+
+
+        fetch("/returnBook", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+            },
+
+            body: data
+
+        })
+
+        .then(response =>
+            response.text()
+        )
+
+        .then(result => {
+
+            // Show popup message
+            alert(result);
+
+            // Clear fields after successful return
+            if (result.toLowerCase().includes("successfully")) {
+
+                document.querySelector(
+                    "#return form"
+                ).reset();
+
+            }
+
+            // Update books immediately
+            loadBooks();
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            alert("Error returning book.");
+
+        });
+
+    }
+
+
+    // ================= LOAD BOOKS ON PAGE OPEN =================
+
+    loadBooks();
+
+</script>
+
+</body>
+</html>
+```
