@@ -149,6 +149,28 @@
             cursor: pointer;
         }
 
+        /* ================= SEARCH BOX ================= */
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+        }
+
+        .search-box button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #1976d2;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
         .message {
             margin-top: 15px;
             font-weight: bold;
@@ -172,6 +194,14 @@
 
             .container {
                 width: 94%;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box button {
+                width: 100%;
             }
         }
     </style>
@@ -333,6 +363,22 @@
     <div class="section" id="books">
 
         <h2>📚 Available Books</h2>
+
+        <!-- SEARCH BOOK -->
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="searchBookName"
+                placeholder="🔍 Search book by name">
+
+            <button onclick="searchBook()">
+                🔍 Search
+            </button>
+
+        </div>
+
 
         <table>
 
@@ -533,6 +579,57 @@
     }
 
 
+    // ================= DISPLAY BOOKS =================
+
+    function displayBooks(books) {
+
+        const table =
+            document.getElementById("bookTable");
+
+        table.innerHTML = "";
+
+        if (!Array.isArray(books) ||
+            books.length === 0) {
+
+            table.innerHTML =
+                "<tr>" +
+                "<td colspan='4'>" +
+                "No books available" +
+                "</td>" +
+                "</tr>";
+
+            return;
+        }
+
+        books.forEach(book => {
+
+            const tr =
+                document.createElement("tr");
+
+            tr.innerHTML =
+                "<td>" +
+                book.title +
+                "</td>" +
+
+                "<td>" +
+                book.author +
+                "</td>" +
+
+                "<td>" +
+                book.category +
+                "</td>" +
+
+                "<td>" +
+                book.status +
+                "</td>";
+
+            table.appendChild(tr);
+
+        });
+
+    }
+
+
     // ================= LOAD BOOKS =================
 
     function loadBooks() {
@@ -551,49 +648,7 @@
 
             .then(books => {
 
-                const table =
-                    document.getElementById("bookTable");
-
-                table.innerHTML = "";
-
-                if (!Array.isArray(books) ||
-                    books.length === 0) {
-
-                    table.innerHTML =
-                        "<tr>" +
-                        "<td colspan='4'>" +
-                        "No books available" +
-                        "</td>" +
-                        "</tr>";
-
-                    return;
-                }
-
-                books.forEach(book => {
-
-                    const tr =
-                        document.createElement("tr");
-
-                    tr.innerHTML =
-                        "<td>" +
-                        book.title +
-                        "</td>" +
-
-                        "<td>" +
-                        book.author +
-                        "</td>" +
-
-                        "<td>" +
-                        book.category +
-                        "</td>" +
-
-                        "<td>" +
-                        book.status +
-                        "</td>";
-
-                    table.appendChild(tr);
-
-                });
+                displayBooks(books);
 
             })
 
@@ -614,6 +669,126 @@
                     "</tr>";
 
             });
+
+    }
+
+
+    // ================= SEARCH BOOK =================
+
+    function searchBook() {
+
+        const bookName =
+            document.getElementById(
+                "searchBookName"
+            ).value.trim();
+
+
+        // If search box is empty,
+        // show all books again
+
+        if (!bookName) {
+
+            loadBooks();
+
+            return;
+        }
+
+
+        const data =
+            "bookName=" +
+            encodeURIComponent(bookName);
+
+
+        fetch("/searchBook", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+            },
+
+            body: data
+
+        })
+
+        .then(response =>
+            response.text()
+        )
+
+        .then(result => {
+
+            const table =
+                document.getElementById("bookTable");
+
+            table.innerHTML = "";
+
+
+            // Book not found
+
+            if (result === "Book not found.") {
+
+                table.innerHTML =
+                    "<tr>" +
+                    "<td colspan='4'>" +
+                    "Book not found." +
+                    "</td>" +
+                    "</tr>";
+
+                return;
+            }
+
+
+            // Convert backend result
+            // into table rows
+
+            const lines =
+                result.trim().split("\n");
+
+
+            lines.forEach(line => {
+
+                const parts =
+                    line.split(" | ");
+
+
+                if (parts.length >= 4) {
+
+                    const tr =
+                        document.createElement("tr");
+
+                    tr.innerHTML =
+                        "<td>" +
+                        parts[0] +
+                        "</td>" +
+
+                        "<td>" +
+                        parts[1] +
+                        "</td>" +
+
+                        "<td>" +
+                        parts[2] +
+                        "</td>" +
+
+                        "<td>" +
+                        parts[3] +
+                        "</td>";
+
+                    table.appendChild(tr);
+
+                }
+
+            });
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            alert("Error searching book.");
+
+        });
 
     }
 
@@ -670,10 +845,8 @@
 
         .then(result => {
 
-            // Show popup message
             alert(result);
 
-            // Clear fields after successful request
             if (result.includes("Successfully")) {
 
                 document.querySelector(
@@ -741,10 +914,8 @@
 
         .then(result => {
 
-            // Show popup message
             alert(result);
 
-            // Clear fields after successful return
             if (result.toLowerCase().includes("successfully")) {
 
                 document.querySelector(
@@ -753,7 +924,6 @@
 
             }
 
-            // Update books immediately
             loadBooks();
 
         })

@@ -1,552 +1,374 @@
-```html
 <!DOCTYPE html>
+
 <html>
 <head>
 
-    <title>Librarian Portal - Library Management System</title>
+```
+<title>Librarian Portal - Library Management System</title>
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
 
-        body {
-            background: #f4f7fb;
-            color: #263238;
-        }
+    body {
+        background: #f4f7fb;
+        color: #263238;
+    }
+
+    header {
+        background: #7b1fa2;
+        color: white;
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    header h1 {
+        font-size: 25px;
+    }
+
+    .logout {
+        background: white;
+        color: #7b1fa2;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1100px;
+        margin: 30px auto;
+    }
+
+    .welcome {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    .welcome h2 {
+        margin-bottom: 10px;
+        color: #7b1fa2;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+
+    .card-icon {
+        font-size: 42px;
+        margin-bottom: 15px;
+    }
+
+    .card h3 {
+        margin-bottom: 10px;
+    }
+
+    .card p {
+        color: #607d8b;
+        margin-bottom: 18px;
+    }
+
+    .card button {
+        border: none;
+        padding: 11px 20px;
+        border-radius: 8px;
+        background: #7b1fa2;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .section {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .section h2 {
+        margin-bottom: 20px;
+        color: #7b1fa2;
+    }
+
+    form {
+        display: grid;
+        gap: 15px;
+    }
+
+    input {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+    }
+
+    form button {
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #7b1fa2;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .message {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    /* SEARCH BOOK */
+
+    .search-box {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .search-box input {
+        flex: 1;
+    }
+
+    .search-box button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        background: #7b1fa2;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 13px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background: #f3e5f5;
+    }
+
+    .request-buttons button {
+        padding: 7px 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-right: 5px;
+        font-weight: bold;
+    }
+
+    .approve {
+        background: #4caf50;
+        color: white;
+    }
+
+    .reject {
+        background: #f44336;
+        color: white;
+    }
+
+    footer {
+        text-align: center;
+        padding: 25px;
+        color: #78909c;
+    }
+
+    @media(max-width:600px) {
 
         header {
-            background: #7b1fa2;
-            color: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 15px 20px;
         }
 
         header h1 {
-            font-size: 25px;
-        }
-
-        .logout {
-            background: white;
-            color: #7b1fa2;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
+            font-size: 20px;
         }
 
         .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 30px auto;
+            width: 94%;
         }
 
-        .welcome {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            margin-bottom: 25px;
+        .search-box {
+            flex-direction: column;
         }
 
-        .welcome h2 {
-            margin-bottom: 10px;
-            color: #7b1fa2;
-        }
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-
-        .card-icon {
-            font-size: 42px;
-            margin-bottom: 15px;
-        }
-
-        .card h3 {
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            color: #607d8b;
-            margin-bottom: 18px;
-        }
-
-        .card button {
-            border: none;
-            padding: 11px 20px;
-            border-radius: 8px;
-            background: #7b1fa2;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .section {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-
-        .section h2 {
-            margin-bottom: 20px;
-            color: #7b1fa2;
-        }
-
-        form {
-            display: grid;
-            gap: 15px;
-        }
-
-        input {
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-
-        form button {
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: #7b1fa2;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .message {
-            margin-top: 15px;
-            font-weight: bold;
-        }
-
-        table {
+        .search-box button {
             width: 100%;
-            border-collapse: collapse;
         }
 
-        th, td {
-            padding: 13px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
+    }
 
-        th {
-            background: #f3e5f5;
-        }
-
-        .request-buttons button {
-            padding: 7px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-right: 5px;
-            font-weight: bold;
-        }
-
-        .approve {
-            background: #4caf50;
-            color: white;
-        }
-
-        .reject {
-            background: #f44336;
-            color: white;
-        }
-
-        footer {
-            text-align: center;
-            padding: 25px;
-            color: #78909c;
-        }
-
-        @media(max-width:600px) {
-
-            header {
-                padding: 15px 20px;
-            }
-
-            header h1 {
-                font-size: 20px;
-            }
-
-            .container {
-                width: 94%;
-            }
-        }
-
-    </style>
+</style>
+```
 
 </head>
 
-
 <body>
-
 
 <header>
 
-    <h1>👩‍💼 Librarian Portal</h1>
+```
+<h1>👩‍💼 Librarian Portal</h1>
 
-    <button class="logout"
-            onclick="window.location.href='/'">
+<button class="logout"
+        onclick="window.location.href='/'">
 
-        Logout
+    Logout
 
-    </button>
+</button>
+```
 
 </header>
 
-
 <div class="container">
 
+```
+<!-- WELCOME -->
 
-    <!-- WELCOME -->
+<div class="welcome">
 
-    <div class="welcome">
+    <h2>Welcome, Librarian! 👋</h2>
 
-        <h2>Welcome, Librarian! 👋</h2>
+    <p>
+        Manage books, members, issues, returns and student requests.
+    </p>
+
+</div>
+
+
+<!-- DASHBOARD CARDS -->
+
+<div class="cards">
+
+
+    <div class="card">
+
+        <div class="card-icon">➕</div>
+
+        <h3>Add Book</h3>
 
         <p>
-            Manage books, members, issues, returns and student requests.
+            Add a new book to the library.
         </p>
 
-    </div>
-
-
-    <!-- DASHBOARD CARDS -->
-
-    <div class="cards">
-
-
-        <div class="card">
-
-            <div class="card-icon">➕</div>
-
-            <h3>Add Book</h3>
-
-            <p>
-                Add a new book to the library.
-            </p>
-
-            <button onclick="showSection('addBook')">
-                Add Book
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-icon">👥</div>
-
-            <h3>Add Member</h3>
-
-            <p>
-                Register a new library member.
-            </p>
-
-            <button onclick="showSection('addMember')">
-                Add Member
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-icon">📕</div>
-
-            <h3>Issue Book</h3>
-
-            <p>
-                Issue a book to a member.
-            </p>
-
-            <button onclick="showSection('issueBook')">
-                Issue Book
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-icon">📗</div>
-
-            <h3>Return Book</h3>
-
-            <p>
-                Process a returned book.
-            </p>
-
-            <button onclick="showSection('returnBook')">
-                Return Book
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-icon">📚</div>
-
-            <h3>Available Books</h3>
-
-            <p>
-                View all books in the library.
-            </p>
-
-            <button onclick="showSection('books')">
-                View Books
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-icon">📖</div>
-
-            <h3>Book Requests</h3>
-
-            <p>
-                View student book requests.
-            </p>
-
-            <button onclick="showSection('requests')">
-                View Requests
-            </button>
-
-        </div>
-
+        <button onclick="showSection('addBook')">
+            Add Book
+        </button>
 
     </div>
 
 
-    <!-- ADD BOOK -->
+    <div class="card">
 
-    <div class="section" id="addBook">
+        <div class="card-icon">👥</div>
 
-        <h2>➕ Add New Book</h2>
+        <h3>Add Member</h3>
 
-        <form onsubmit="addBook(event)">
+        <p>
+            Register a new library member.
+        </p>
 
-            <input
-                type="text"
-                id="bookTitle"
-                placeholder="Book Name"
-                required>
-
-            <input
-                type="text"
-                id="bookAuthor"
-                placeholder="Author"
-                required>
-
-            <input
-                type="text"
-                id="bookCategory"
-                placeholder="Category"
-                required>
-
-            <button type="submit">
-                ➕ Add Book
-            </button>
-
-        </form>
-
-        <div id="addBookMessage" class="message"></div>
+        <button onclick="showSection('addMember')">
+            Add Member
+        </button>
 
     </div>
 
 
-    <!-- ADD MEMBER -->
+    <div class="card">
 
-    <div class="section" id="addMember">
+        <div class="card-icon">📕</div>
 
-        <h2>👥 Add New Member</h2>
+        <h3>Issue Book</h3>
 
-        <form onsubmit="addMember(event)">
+        <p>
+            Issue a book to a member.
+        </p>
 
-            <input
-                type="text"
-                id="memberName"
-                placeholder="Member Name"
-                required>
-
-            <input
-                type="text"
-                id="department"
-                placeholder="Department"
-                required>
-
-            <button type="submit">
-                👥 Add Member
-            </button>
-
-        </form>
-
-        <div id="addMemberMessage" class="message"></div>
+        <button onclick="showSection('issueBook')">
+            Issue Book
+        </button>
 
     </div>
 
 
-    <!-- ISSUE BOOK -->
+    <div class="card">
 
-    <div class="section" id="issueBook">
+        <div class="card-icon">📗</div>
 
-        <h2>📕 Issue Book</h2>
+        <h3>Return Book</h3>
 
-        <form onsubmit="issueBook(event)">
+        <p>
+            Process a returned book.
+        </p>
 
-            <input
-                type="text"
-                id="issueBookName"
-                placeholder="Book Name"
-                required>
-
-            <input
-                type="text"
-                id="issueMemberName"
-                placeholder="Member Name"
-                required>
-
-            <button type="submit">
-                📕 Issue Book
-            </button>
-
-        </form>
-
-        <div id="issueMessage" class="message"></div>
+        <button onclick="showSection('returnBook')">
+            Return Book
+        </button>
 
     </div>
 
 
-    <!-- RETURN BOOK -->
+    <div class="card">
 
-    <div class="section" id="returnBook">
+        <div class="card-icon">📚</div>
 
-        <h2>📗 Return Book</h2>
+        <h3>Available Books</h3>
 
-        <form onsubmit="returnBook(event)">
+        <p>
+            View all books in the library.
+        </p>
 
-            <input
-                type="text"
-                id="returnBookName"
-                placeholder="Book Name"
-                required>
-
-            <input
-                type="text"
-                id="returnMemberName"
-                placeholder="Member Name"
-                required>
-
-            <button type="submit">
-                📗 Return Book
-            </button>
-
-        </form>
-
-        <div id="returnMessage" class="message"></div>
+        <button onclick="showSection('books')">
+            View Books
+        </button>
 
     </div>
 
 
-    <!-- AVAILABLE BOOKS -->
+    <div class="card">
 
-    <div class="section" id="books">
+        <div class="card-icon">📖</div>
 
-        <h2>📚 Library Books</h2>
+        <h3>Book Requests</h3>
 
-        <table>
+        <p>
+            View student book requests.
+        </p>
 
-            <thead>
-
-                <tr>
-
-                    <th>Book Name</th>
-                    <th>Author</th>
-                    <th>Category</th>
-                    <th>Status</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody id="bookTable">
-
-                <tr>
-
-                    <td colspan="4">
-                        Loading books...
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-
-    <!-- BOOK REQUESTS -->
-
-    <div class="section" id="requests">
-
-        <h2>📖 Student Book Requests</h2>
-
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th>Student Name</th>
-                    <th>Student ID</th>
-                    <th>Book Name</th>
-                    <th>Status</th>
-                    <th>Action</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody id="requestTable">
-
-                <tr>
-
-                    <td colspan="5">
-                        Loading requests...
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
+        <button onclick="showSection('requests')">
+            View Requests
+        </button>
 
     </div>
 
@@ -554,12 +376,238 @@
 </div>
 
 
+<!-- ADD BOOK -->
+
+<div class="section" id="addBook">
+
+    <h2>➕ Add New Book</h2>
+
+    <form onsubmit="addBook(event)">
+
+        <input
+            type="text"
+            id="bookTitle"
+            placeholder="Book Name"
+            required>
+
+        <input
+            type="text"
+            id="bookAuthor"
+            placeholder="Author"
+            required>
+
+        <input
+            type="text"
+            id="bookCategory"
+            placeholder="Category"
+            required>
+
+        <button type="submit">
+            ➕ Add Book
+        </button>
+
+    </form>
+
+    <div id="addBookMessage" class="message"></div>
+
+</div>
+
+
+<!-- ADD MEMBER -->
+
+<div class="section" id="addMember">
+
+    <h2>👥 Add New Member</h2>
+
+    <form onsubmit="addMember(event)">
+
+        <input
+            type="text"
+            id="memberName"
+            placeholder="Member Name"
+            required>
+
+        <input
+            type="text"
+            id="department"
+            placeholder="Department"
+            required>
+
+        <button type="submit">
+            👥 Add Member
+        </button>
+
+    </form>
+
+    <div id="addMemberMessage" class="message"></div>
+
+</div>
+
+
+<!-- ISSUE BOOK -->
+
+<div class="section" id="issueBook">
+
+    <h2>📕 Issue Book</h2>
+
+    <form onsubmit="issueBook(event)">
+
+        <input
+            type="text"
+            id="issueBookName"
+            placeholder="Book Name"
+            required>
+
+        <input
+            type="text"
+            id="issueMemberName"
+            placeholder="Member Name"
+            required>
+
+        <button type="submit">
+            📕 Issue Book
+        </button>
+
+    </form>
+
+    <div id="issueMessage" class="message"></div>
+
+</div>
+
+
+<!-- RETURN BOOK -->
+
+<div class="section" id="returnBook">
+
+    <h2>📗 Return Book</h2>
+
+    <form onsubmit="returnBook(event)">
+
+        <input
+            type="text"
+            id="returnBookName"
+            placeholder="Book Name"
+            required>
+
+        <input
+            type="text"
+            id="returnMemberName"
+            placeholder="Member Name"
+            required>
+
+        <button type="submit">
+            📗 Return Book
+        </button>
+
+    </form>
+
+    <div id="returnMessage" class="message"></div>
+
+</div>
+
+
+<!-- AVAILABLE BOOKS -->
+
+<div class="section" id="books">
+
+    <h2>📚 Library Books</h2>
+
+    <!-- SEARCH BOOK -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchBookName"
+            placeholder="🔍 Search book by name">
+
+        <button onclick="searchBook()">
+            🔍 Search
+        </button>
+
+    </div>
+
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Book Name</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Status</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="bookTable">
+
+            <tr>
+
+                <td colspan="4">
+                    Loading books...
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- BOOK REQUESTS -->
+
+<div class="section" id="requests">
+
+    <h2>📖 Student Book Requests</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Student Name</th>
+                <th>Student ID</th>
+                <th>Book Name</th>
+                <th>Status</th>
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="requestTable">
+
+            <tr>
+
+                <td colspan="5">
+                    Loading requests...
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+```
+
+</div>
+
 <footer>
 
-    Library Management System © 2026
+```
+Library Management System © 2026
+```
 
 </footer>
-
 
 <script>
 
@@ -915,55 +963,7 @@
 
         .then(books => {
 
-            const table =
-                document.getElementById(
-                    "bookTable"
-                );
-
-            table.innerHTML = "";
-
-
-            if (!Array.isArray(books) ||
-                books.length === 0) {
-
-                table.innerHTML =
-                    "<tr>" +
-                    "<td colspan='4'>" +
-                    "No books available" +
-                    "</td>" +
-                    "</tr>";
-
-                return;
-
-            }
-
-
-            books.forEach(book => {
-
-                const tr =
-                    document.createElement("tr");
-
-                tr.innerHTML =
-                    "<td>" +
-                    book.title +
-                    "</td>" +
-
-                    "<td>" +
-                    book.author +
-                    "</td>" +
-
-                    "<td>" +
-                    book.category +
-                    "</td>" +
-
-                    "<td>" +
-                    book.status +
-                    "</td>";
-
-
-                table.appendChild(tr);
-
-            });
+            displayBooks(books);
 
         })
 
@@ -979,6 +979,188 @@
                 "Unable to load books" +
                 "</td>" +
                 "</tr>";
+
+        });
+
+    }
+
+
+    // =========================
+    // DISPLAY BOOKS
+    // =========================
+
+    function displayBooks(books) {
+
+        const table =
+            document.getElementById(
+                "bookTable"
+            );
+
+        table.innerHTML = "";
+
+
+        if (!Array.isArray(books) ||
+            books.length === 0) {
+
+            table.innerHTML =
+                "<tr>" +
+                "<td colspan='4'>" +
+                "No books found" +
+                "</td>" +
+                "</tr>";
+
+            return;
+
+        }
+
+
+        books.forEach(book => {
+
+            const tr =
+                document.createElement("tr");
+
+            tr.innerHTML =
+                "<td>" +
+                book.title +
+                "</td>" +
+
+                "<td>" +
+                book.author +
+                "</td>" +
+
+                "<td>" +
+                book.category +
+                "</td>" +
+
+                "<td>" +
+                book.status +
+                "</td>";
+
+
+            table.appendChild(tr);
+
+        });
+
+    }
+
+
+    // =========================
+    // SEARCH BOOK
+    // =========================
+
+    function searchBook() {
+
+        const bookName =
+            document.getElementById(
+                "searchBookName"
+            ).value.trim();
+
+
+        // If search box is empty, show all books
+
+        if (!bookName) {
+
+            loadBooks();
+
+            return;
+
+        }
+
+
+        const data =
+            "bookName=" +
+            encodeURIComponent(bookName);
+
+
+        fetch("/searchBook", {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+
+            },
+
+            body: data
+
+        })
+
+        .then(response =>
+            response.text()
+        )
+
+        .then(result => {
+
+            const table =
+                document.getElementById(
+                    "bookTable"
+                );
+
+            table.innerHTML = "";
+
+
+            if (result === "Book not found.") {
+
+                table.innerHTML =
+                    "<tr>" +
+                    "<td colspan='4'>" +
+                    "Book not found." +
+                    "</td>" +
+                    "</tr>";
+
+                return;
+
+            }
+
+
+            const lines =
+                result.trim().split("\n");
+
+
+            lines.forEach(line => {
+
+                const parts =
+                    line.split(" | ");
+
+
+                if (parts.length >= 4) {
+
+                    const tr =
+                        document.createElement("tr");
+
+                    tr.innerHTML =
+                        "<td>" +
+                        parts[0] +
+                        "</td>" +
+
+                        "<td>" +
+                        parts[1] +
+                        "</td>" +
+
+                        "<td>" +
+                        parts[2] +
+                        "</td>" +
+
+                        "<td>" +
+                        parts[3] +
+                        "</td>";
+
+
+                    table.appendChild(tr);
+
+                }
+
+            });
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            alert("Error searching book.");
 
         });
 
@@ -1139,10 +1321,8 @@
 
             alert(result);
 
-            // Refresh requests immediately
             loadRequests();
 
-            // Refresh book status immediately
             loadBooks();
 
         })
@@ -1169,7 +1349,5 @@
 
 </script>
 
-
 </body>
 </html>
-```
